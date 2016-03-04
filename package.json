@@ -1,0 +1,20 @@
+{
+  "name": "pintbot",
+  "version": "0.1.0",
+  "author": {
+    "name": "Iiro Jäppinen",
+    "email": "iiro@jappinen.fi"
+  },
+  "description": "Pint Bot will help you find that one pint.",
+  "main": "main.js",
+  "readme": "",
+  "license": "",
+  "dependencies": {
+    "body-parser": "*",
+    "connect": "*",
+    "node-telegram-bot-api": "*"
+  },
+  "scripts": {
+    "start": "node main.js"
+  }
+}
