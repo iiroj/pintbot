@@ -8,7 +8,7 @@
   "description": "Pint Bot will help you find that one pint.",
   "main": "main.js",
   "readme": "",
-  "license": "LICENCE",
+  "license": "GPL-2.0",
   "dependencies": {
     "body-parser": "*",
     "connect": "*",
