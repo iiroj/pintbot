@@ -11,7 +11,7 @@ var logic = require("./logic.js"),
     })
 
 var pintbot = new Bot(token.token)
-pintbot.setWebHook('https://telegram.jappinen.fi/bot' + token)
+pintbot.setWebHook('https://telegram.jappinen.fi/bot' + token.token)
 
 function sendPubInfo(msg) {
   var fromId = msg.from.id,
