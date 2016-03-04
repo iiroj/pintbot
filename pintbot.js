@@ -1,5 +1,5 @@
 var logic = require("./logic.js"),
-    token = require("./token.js"),
+    config = require("./config.js"),
     Bot   = require('node-telegram-bot-api'),
     pubKeyboard = JSON.stringify({
       keyboard: [
@@ -10,8 +10,8 @@ var logic = require("./logic.js"),
       resize_keyboard: true
     })
 
-var pintbot = new Bot(token.token)
-pintbot.setWebHook('https://telegram.jappinen.fi/bot' + token.token)
+var pintbot = new Bot(config.token)
+pintbot.setWebHook(config.url + "/" + config.token)
 
 function sendPubInfo(msg) {
   var fromId = msg.from.id,

@@ -1,12 +1,13 @@
 var connect     = require("connect"),
     http        = require("http"),
-    bodyParser  = require("body-parser")
+    bodyParser  = require("body-parser"),
+    config     = require("./config")
 
 var app = connect()
 app.use(bodyParser.json())
 
 module.exports = function (pintbot) {
-  app.use("/bot197586686:AAE8vjjbLpiWuWFO4qzLZ1Bi4QcQ7UZ66WM", function(req, res) {
+  app.use("/" + config.token, function(req, res) {
     pintbot.processUpdate(req.body)
     res.statusCode = 200
     res.end()
