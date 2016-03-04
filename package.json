@@ -8,6 +8,7 @@
   "description": "Pint Bot will help you find that one pint.",
   "main": "main.js",
   "readme": "",
+  "repository": "github:iiroj/pintbot",
   "license": "GPL-2.0",
   "dependencies": {
     "body-parser": "*",
