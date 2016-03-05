@@ -44,6 +44,4 @@ pintbot.onText(/(.+)/, function(msg) {
   }
 })
 
-module.exports = pintbot;
-
-console.log('Pint Bot standing by.')
+module.exports = pintbot

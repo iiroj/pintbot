@@ -14,4 +14,3 @@ module.exports = function (pintbot) {
 }
 
 http.createServer(app).listen(8443, "127.0.0.1")
-console.log("Webhook listener standing by.")
