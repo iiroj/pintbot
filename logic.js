@@ -71,13 +71,12 @@ function whenWillPubOpen(pub) {
   var hoursToOpen     = hoursToOpenCalc(),
       hoursSinceClose = hoursSinceCloseCalc(),
       minutes         = 60 - date.getMinutes(),
-      string          = "🍻 " + pub.name + " on jo auki!"
+      string          = "🍻 " + pub.name + " is already open!"
   if (hoursToOpen > 0 && hoursSinceClose > 0) {
-    string = "Aukeaa"
-    if (hoursToOpen > 0) { string += " " + hoursToOpen + " h" }
+    string = pub.name + " opens in"
+    if (hoursToOpen > 0) { string += " " + hoursToOpen + " hours" }
     if (hoursToOpen > 0 && date.getMinutes() !== 00) { string += ","}
     if (date.getMinutes() !== 00) { string += " " + minutes + " min" }
-    string += " päästä"
   }
   return string
 }
@@ -87,13 +86,13 @@ var selectedPubInfo = function(pub, msgDate) {
   day = date.getDay()
 
   if (pub.menu !== null) {
-    var pubMenu =  " • [olutvalikoima](" + pub.menu + ")"
+    var pubMenu =  " • [Menu](" + pub.menu + ")"
   } else { var pubMenu = ""}
 
   var pubOpen      = whenWillPubOpen(pub),
-      pubOpenRange = " _(klo " + pub.open[day] + " – " + pub.close[day] + ")_"
+      pubOpenRange = " _(Open " + pub.open[day] + " – " + pub.close[day] + ")_"
 
-  var response = "*" + pub.name + "*\n" + "[kotisivut](" + pub.url + ")" + pubMenu + "\n\n" + pubOpen + pubOpenRange
+  var response = "*" + pub.name + "*\n" + "[Website](" + pub.url + ")" + pubMenu + "\n\n" + pubOpen + pubOpenRange
   return response
 }
 
