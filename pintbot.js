@@ -21,8 +21,8 @@ function demandLocation(fromId, fromName) {
   })
 }
 
-// Find a list of pubs based on the user's location
-function findPubs(fromId, fromName) {
+// Suggest pubs based on the user's location
+function suggestPubs(fromId, fromName) {
   var location  = locations.get(fromId),
       searchObj = { query: "beer", limit: 5 }
 
@@ -91,26 +91,27 @@ function pubInfo(msgId, fromId, query, location) {
   })
 }
 
-// When user sends a location, save it and pass to findPubs()
+// When user sends a location, save it and pass to suggestPubs()
 pintbot.on("location", function(msg) {
   var fromId   = msg.from.id,
       fromName = msg.from.first_name,
       location = { lat: msg.location.latitude, lng: msg.location.longitude }
 
   locations.set(fromId, location)
-  findPubs(fromId, fromName)
+  suggestPubs(fromId, fromName)
 })
 
-// When users sends /location, save the query as a location string
+// When user sends /location with some query, save the query as a location string
 pintbot.onText(/^\/location (.+)$/, function(msg, match) {
   var query    = match[1],
       fromId   = msg.from.id,
       fromName = msg.from.first_name
 
   locations.set(fromId, query)
-  findPubs(fromId, fromName)
+  suggestPubs(fromId, fromName)
 })
 
+// When user sends /location, show him his saved location
 pintbot.onText(/^\/location$/, function(msg) {
   var fromId   = msg.from.id,
       fromName = msg.from.first_name,
@@ -132,7 +133,7 @@ pintbot.onText(/^\/location$/, function(msg) {
   })
 })
 
-// When users sends /pub, use it and location to find info about a pub. If there is location saved, pass to demandLocation()
+// When user sends /pub and some query, use it and location to find info about a pub. If there is location saved, pass to demandLocation()
 pintbot.onText(/^\/pub (.+)$/, function(msg, match) {
   var query    = match[1],
       msgId    = msg.id,
@@ -144,6 +145,20 @@ pintbot.onText(/^\/pub (.+)$/, function(msg, match) {
     demandLocation(fromId, fromName)
   } else {
     pubInfo(msgId, fromId, query, location)
+  }
+})
+
+// When user sends /pub, given he has a saved location, suggest him some pubs
+pintbot.onText(/^\/pub$/, function(msg) {
+  var msgId    = msg.id,
+      fromId   = msg.from.id,
+      fromName = msg.from.first_name,
+      location = locations.get(fromId)
+
+  if (location == undefined) {
+    demandLocation(fromId, fromName)
+  } else {
+    suggestPubs(fromId, fromName)
   }
 })
 
