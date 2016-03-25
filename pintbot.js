@@ -80,7 +80,7 @@ _(${pub.location.distance} meters away)_`
         message += `📞 ${pub.contact.phone}`
       }
     }
-    if (pub.menu.url) {
+    if (pub.menu) {
       message += `
 [🍺 Menu](${pub.menu.url})`
     }
