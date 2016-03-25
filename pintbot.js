@@ -10,17 +10,6 @@ var locations  = Dirty("locations.json"),
 
 pintbot.setWebHook(config.telegramUrl + "/" + config.telegramToken)
 
-// Notify user in case we do not have his location saved
-function demandLocation(fromId, fromName) {
-  var message  = "😰 Sorry, " + fromName + ". I can't find you beer without knowing where you are. Please send me your 📍location or describe it with /location."
-
-  pintbot.sendMessage(fromId, message, {
-    ReplyKeyboardHide: {
-      hide_keyboard: true
-    }
-  })
-}
-
 // Suggest pubs based on the user's location
 function suggestPubs(msgId, fromId, fromName) {
   var location  = locations.get(fromId),
@@ -73,8 +62,15 @@ function pubInfo(msgId, fromId, query, location) {
   foursquare.searchVenues(searchObj, function(error, response) {
     if (error) { return console.error(error) }
     var pub = response.response.venues[0],
-        addr = pub.location.formattedAddress.join(", ")
-        message = "🍻 *" + pub.name + "* \n" + addr
+        message = "🍻 *" + pub.name + "*"
+
+    if (pub.location.formattedAddress) {
+      message += "\n " + pub.location.formattedAddress.join(", ")
+    }
+    if (pub.location.distance) {
+      message += "\n _Distance: " + pub.location.distance + " meters_"
+    }
+
     pintbot.sendLocation(fromId, pub.location.lat, pub.location.lng, {
       disable_notification: true,
       reply_to_message_id: msgId,
@@ -135,6 +131,17 @@ pintbot.onText(/^\/location$/, function(msg) {
     }
   })
 })
+
+// Notify user in case we do not have his location saved
+function demandLocation(fromId, fromName) {
+  var message  = "😰 Sorry, " + fromName + ". I can't find you beer without knowing where you are. Please send me your 📍location or describe it with /location."
+
+  pintbot.sendMessage(fromId, message, {
+    ReplyKeyboardHide: {
+      hide_keyboard: true
+    }
+  })
+}
 
 // When user sends /clear, remove his location
 pintbot.onText(/^\/clear$/, function(msg) {
