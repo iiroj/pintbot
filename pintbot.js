@@ -139,15 +139,13 @@ pintbot.onText(/^\/clear$/, function(msg) {
   var msgId    = msg.id,
       fromId   = msg.from.id,
       fromName = msg.from.first_name,
-      location = locations.get(fromId),
-      result
+      location = locations.get(fromId)
 
   if (location == undefined) {
-    result = "😅 Don't worry, " + fromName + ", I didn't know your location anyway."
+    var result = "😅 Don't worry, " + fromName + ", I didn't know your location anyway."
   } else {
-    locations.rm(fromId, function() {
-      result = "🤐 I've cleared your location successfully, " + fromName + "."
-    })
+    locations.set(fromId, undefined)
+    var result = "🤐 I've cleared your location successfully, " + fromName + "."
   }
 
   pintbot.sendMessage(fromId, result, {
