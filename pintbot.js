@@ -146,7 +146,7 @@ pintbot.onText(/^\/clear$/, function(msg) {
     result = "😅 Don't worry, " + fromName + ", I didn't know your location anyway."
   } else {
     locations.rm(fromId, function() {
-      result = "🤐 I've cleared your location successfully, " + fromName "."
+      result = "🤐 I've cleared your location successfully, " + fromName + "."
     })
   }
 
