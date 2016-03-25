@@ -2,8 +2,8 @@
 
 >🍻 My function is to guide you to a pint of beer. Please send me your 📍location to start. 
 >
-> __/pub__ _Get pub suggestions, or information about a specific pub_  
-> __/location__ _Get your current saved location, or set a new geocodable location_  
+> __/suggest__ _Get pub suggestions_  
+> __/location__ _Get your current saved location, or set a new geocodable location (eg. /location Helsinki)_  
 > __/clear__ _Clear your saved location_  
 > __/help__ _Show brief help message_
 
