@@ -29,8 +29,8 @@ function suggestPubs(msgId, fromId, fromName) {
       console.error(error)
       pintbot.sendMessage(fromId, `Something went wrong, ${fromName}. Maybe try another 📍location?`, {
         reply_to_message_id: msgId,
-        ReplyKeyboardHide: {
-          hide_keyboard: true
+        reply_markup: {
+          ReplyKeyboardHide: true
         }
       })
       return
@@ -72,8 +72,8 @@ function pubInfo(msgId, fromId, fromName, query, location) {
       console.error(error)
       pintbot.sendMessage(fromId, `Something went wrong, ${fromName}. Maybe try another 📍location?`, {
         reply_to_message_id: msgId,
-        ReplyKeyboardHide: {
-          hide_keyboard: true
+        reply_markup: {
+          ReplyKeyboardHide: true
         }
       })
       return
@@ -84,8 +84,8 @@ function pubInfo(msgId, fromId, fromName, query, location) {
     if (pub == undefined) {
       pintbot.sendMessage(fromId, `I found nothing, ${fromName}. Maybe try another 📍location?`, {
         reply_to_message_id: msgId,
-        ReplyKeyboardHide: {
-          hide_keyboard: true
+        reply_markup: {
+          ReplyKeyboardHide: true
         }
       })
       return
@@ -118,15 +118,15 @@ _(${pub.location.distance} meters away)_`
     pintbot.sendLocation(fromId, pub.location.lat, pub.location.lng, {
       disable_notification: true,
       reply_to_message_id: msgId,
-      ReplyKeyboardHide: {
-        hide_keyboard: true
+      reply_markup: {
+        ReplyKeyboardHide: true
       }
     }).then(pintbot.sendMessage(fromId, message, {
       disable_web_page_preview: true,
       parse_mode: "Markdown",
       reply_to_message_id: msgId,
-      ReplyKeyboardHide: {
-        hide_keyboard: true
+      reply_markup: {
+        ReplyKeyboardHide: true
       }
     }))
   })
@@ -170,8 +170,8 @@ pintbot.onText(/^\/location$/, function(msg) {
   }
 
   pintbot.sendMessage(fromId, result, {
-    ReplyKeyboardHide: {
-      hide_keyboard: true
+    reply_markup: {
+      ReplyKeyboardHide: true
     }
   })
 })
@@ -181,8 +181,8 @@ function demandLocation(fromId, fromName) {
   var message  = `😰 Sorry, ${fromName}. Please send me your 📍location or describe it with /location so that I can help you.`
 
   pintbot.sendMessage(fromId, message, {
-    ReplyKeyboardHide: {
-      hide_keyboard: true
+    reply_markup: {
+      ReplyKeyboardHide: true
     }
   })
 }
@@ -207,8 +207,8 @@ pintbot.onText(/^\/clear$/, function(msg) {
 
   pintbot.sendMessage(fromId, result, {
     reply_to_message_id: msgId,
-    ReplyKeyboardHide: {
-      hide_keyboard: true
+    reply_markup: {
+      ReplyKeyboardHide: true
     }
   })
 })
@@ -258,8 +258,8 @@ pintbot.onText(/^\/help$/, function(msg) {
     disable_web_page_preview: true,
     parse_mode: "Markdown",
     reply_to_message_id: msgId,
-    ReplyKeyboardHide: {
-      hide_keyboard: true
+    reply_markup: {
+      ReplyKeyboardHide: true
     }
   })
 })
