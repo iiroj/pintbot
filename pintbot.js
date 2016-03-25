@@ -29,7 +29,7 @@ function suggestPubs(msgId, fromId, fromName) {
     var venues = response.response.groups[0].items
     var offerKeyboard = venues.map(function(obj) {
       var arr = []
-      arr.push("/pub " + obj.venue.name)
+      arr.push(obj.venue.name)
       return arr 
     })
 
