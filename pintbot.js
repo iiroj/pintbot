@@ -60,13 +60,14 @@ function pubInfo(msgId, fromId, query, location) {
   foursquare.searchVenues(searchObj, function(error, response) {
     if (error) { return console.error(error) }
     var pub = response.response.venues[0],
-        message = "🍻 *" + pub.name + "*"
+        message = `🍻 *${pub.name}*`
 
     if (pub.location.formattedAddress) {
       message += "\n " + pub.location.formattedAddress.join(", ")
     }
     if (pub.location.distance) {
-      message += "\n _Distance: " + pub.location.distance + " meters_"
+      message += `
+_(${pub.location.distance} meters away)_`
     }
 
     pintbot.sendLocation(fromId, pub.location.lat, pub.location.lng, {
