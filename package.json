@@ -1,19 +1,21 @@
 {
   "name": "pintbot",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "Iiro Jäppinen",
     "email": "iiro@jappinen.fi"
   },
-  "description": "Pint Bot will help you find that one pint.",
+  "description": "🍻 My function is to guide you to a pint of beer. Please send me your 📍location to start.",
   "main": "main.js",
   "readme": "",
   "repository": "github:iiroj/pintbot",
   "license": "GPL-2.0",
   "dependencies": {
-    "body-parser": "*",
-    "connect": "*",
-    "node-telegram-bot-api": "*"
+    "body-parser": "1.15.0",
+    "connect": "3.4.1",
+    "dirty": "1.0.0",
+    "foursquare-venues": "0.0.3",
+    "node-telegram-bot-api": "0.20.1"
   },
   "scripts": {
     "start": "node main.js"
