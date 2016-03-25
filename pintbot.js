@@ -134,6 +134,30 @@ pintbot.onText(/^\/location$/, function(msg) {
   })
 })
 
+// When user sends /clear, remove his location
+pintbot.onText(/^\/clear$/, function(msg) {
+  var msgId    = msg.id,
+      fromId   = msg.from.id,
+      fromName = msg.from.first_name,
+      location = locations.get(fromId),
+      result
+
+  if (location == undefined) {
+    result = "😅 Don't worry, " + fromName + ", I didn't know your location anyway."
+  } else {
+    locations.rm(fromId, function() {
+      result = "🤐 I've cleared your location successfully, " + fromName "."
+    })
+  }
+
+  pintbot.sendMessage(fromId, result, {
+    reply_to_message_id: msgId,
+    ReplyKeyboardHide: {
+      hide_keyboard: true
+    }
+  })
+})
+
 // When user sends /pub and some query, use it and location to find info about a pub. If there is location saved, pass to demandLocation()
 pintbot.onText(/^\/pub (.+)$/, function(msg, match) {
   var query    = match[1],
