@@ -22,7 +22,7 @@ function demandLocation(fromId, fromName) {
 }
 
 // Suggest pubs based on the user's location
-function suggestPubs(fromId, fromName) {
+function suggestPubs(msgId, fromId, fromName) {
   var location  = locations.get(fromId),
       searchObj = { query: "beer", limit: 5, section: "drinks" }
 
@@ -46,6 +46,7 @@ function suggestPubs(fromId, fromName) {
 
     pintbot.sendMessage(fromId, msg, {
       parse_mode: "markdown",
+      reply_to_message_id: msgId,
       reply_markup: {
         keyboard: offerKeyboard,
         one_time_keyboard: true
@@ -74,7 +75,6 @@ function pubInfo(msgId, fromId, query, location) {
     var pub = response.response.venues[0],
         addr = pub.location.formattedAddress.join(", ")
         message = "🍻 *" + pub.name + "* \n" + addr
-    console.log(pub.location.formattedAddress)
     pintbot.sendLocation(fromId, pub.location.lat, pub.location.lng, {
       disable_notification: true,
       reply_to_message_id: msgId,
@@ -94,22 +94,24 @@ function pubInfo(msgId, fromId, query, location) {
 
 // When user sends a location, save it and pass to suggestPubs()
 pintbot.on("location", function(msg) {
-  var fromId   = msg.from.id,
+  var msgId    = msg.id,
+      fromId   = msg.from.id,
       fromName = msg.from.first_name,
       location = { lat: msg.location.latitude, lng: msg.location.longitude }
 
   locations.set(fromId, location)
-  suggestPubs(fromId, fromName)
+  suggestPubs(msgId, fromId, fromName)
 })
 
 // When user sends /location with some query, save the query as a location string
 pintbot.onText(/^\/location (.+)$/, function(msg, match) {
   var query    = match[1],
+      msgId    = msg.id,
       fromId   = msg.from.id,
       fromName = msg.from.first_name
 
   locations.set(fromId, query)
-  suggestPubs(fromId, fromName)
+  suggestPubs(msgId, fromId, fromName)
 })
 
 // When user sends /location, show him his saved location
@@ -122,9 +124,9 @@ pintbot.onText(/^\/location$/, function(msg) {
     var result = "😰 I don't know where you are, " + fromName + ". You can send me your 📍location or describe it with /location."
   } else if (location instanceof Object) {
     var coords = String(location.lat) + "," + String(location.lng),
-        result = "My records show you are at 📍 " + coords + ", " + fromName + "."
+        result = "My records show you are at 📍" + coords + ", " + fromName + "."
   } else {
-    var result = "My records show you are in 💭 " + location + ", " + fromName + "."
+    var result = "My records show you are in 💭" + location + ", " + fromName + "."
   }
 
   pintbot.sendMessage(fromId, result, {
@@ -192,7 +194,27 @@ pintbot.onText(/^\/pub$/, function(msg) {
   if (location == undefined) {
     demandLocation(fromId, fromName)
   } else {
-    suggestPubs(fromId, fromName)
+    suggestPubs(msgId, fromId, fromName)
+  }
+})
+
+pintbot.on("inline_query", function(msg) {
+  var msgId    = msg.id,
+      query    = msg.query,
+      fromId   = msg.from.id,
+      fromName = msg.from.first_name,
+      location = locations.get(fromId)
+
+  if (location == undefined) {
+    var message = "😅 Sorry, " + fromName + ", I can't suggest you pubs because I don't know where you are. You can send me your 📍location or describe it with /location."
+    pintbot.sendMessage(fromId, message, {
+      reply_to_message_id: msgId,
+      ReplyKeyboardHide: {
+        hide_keyboard: true
+      }
+    })
+  } else {
+    pubInfo(msgId, fromId, query, location)
   }
 })
 
