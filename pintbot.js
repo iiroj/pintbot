@@ -69,16 +69,20 @@ function pubInfo(msgId, fromId, query, location) {
       message += `
 _(${pub.location.distance} meters away)_`
     }
-    if (pub.contact.phone | pub.contact.formattedPhone | pub.url) {
-      message += "\n"
-      if (pub.contact.formattedPhone) {
-        message += `[📞Phone](${pub.contact.formattedPhone}) `
-      } else if (pub.contact.phone){
-        message += `[📞Phone](${pub.contact.phone}) `
-      }
+    if (pub.url | pub.contact.phone | pub.contact.formattedPhone) {
+      message += "\n\n"
       if (pub.url) {
-        message += `[🌍 URL](${pub.url})`
+        message += `[🌍 URL](${pub.url})    `
       }
+      if (pub.contact.formattedPhone) {
+        message += `📞 ${pub.contact.formattedPhone}`
+      } else if (pub.contact.phone){
+        message += `📞 ${pub.contact.phone}`
+      }
+    }
+    if (pub.menu.url) {
+      message += `
+[🍺 Menu](${pub.menu.url})`
     }
 
     pintbot.sendLocation(fromId, pub.location.lat, pub.location.lng, {
