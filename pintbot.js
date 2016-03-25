@@ -30,7 +30,7 @@ function suggestPubs(msgId, fromId, fromName) {
       pintbot.sendMessage(fromId, `Something went wrong, ${fromName}. Maybe try another 📍location?`, {
         reply_to_message_id: msgId,
         reply_markup: {
-          ReplyKeyboardHide: true
+          ReplyKeyboardHide: {hide_keyboard: true}
         }
       })
       return
@@ -73,7 +73,7 @@ function pubInfo(msgId, fromId, fromName, query, location) {
       pintbot.sendMessage(fromId, `Something went wrong, ${fromName}. Maybe try another 📍location?`, {
         reply_to_message_id: msgId,
         reply_markup: {
-          ReplyKeyboardHide: true
+          ReplyKeyboardHide: {hide_keyboard: true}
         }
       })
       return
@@ -85,7 +85,7 @@ function pubInfo(msgId, fromId, fromName, query, location) {
       pintbot.sendMessage(fromId, `I found nothing, ${fromName}. Maybe try another 📍location?`, {
         reply_to_message_id: msgId,
         reply_markup: {
-          ReplyKeyboardHide: true
+          ReplyKeyboardHide: {hide_keyboard: true}
         }
       })
       return
@@ -119,14 +119,14 @@ _(${pub.location.distance} meters away)_`
       disable_notification: true,
       reply_to_message_id: msgId,
       reply_markup: {
-        ReplyKeyboardHide: true
+        ReplyKeyboardHide: {hide_keyboard: true}
       }
     }).then(pintbot.sendMessage(fromId, message, {
       disable_web_page_preview: true,
       parse_mode: "Markdown",
       reply_to_message_id: msgId,
       reply_markup: {
-        ReplyKeyboardHide: true
+        ReplyKeyboardHide: {hide_keyboard: true}
       }
     }))
   })
@@ -171,7 +171,7 @@ pintbot.onText(/^\/location$/, function(msg) {
 
   pintbot.sendMessage(fromId, result, {
     reply_markup: {
-      ReplyKeyboardHide: true
+      ReplyKeyboardHide: {hide_keyboard: true}
     }
   })
 })
@@ -182,7 +182,7 @@ function demandLocation(fromId, fromName) {
 
   pintbot.sendMessage(fromId, message, {
     reply_markup: {
-      ReplyKeyboardHide: true
+      ReplyKeyboardHide: {hide_keyboard: true}
     }
   })
 }
@@ -208,7 +208,7 @@ pintbot.onText(/^\/clear$/, function(msg) {
   pintbot.sendMessage(fromId, result, {
     reply_to_message_id: msgId,
     reply_markup: {
-      ReplyKeyboardHide: true
+      ReplyKeyboardHide: {hide_keyboard: true}
     }
   })
 })
@@ -259,7 +259,7 @@ pintbot.onText(/^\/help$/, function(msg) {
     parse_mode: "Markdown",
     reply_to_message_id: msgId,
     reply_markup: {
-      ReplyKeyboardHide: true
+      ReplyKeyboardHide: {hide_keyboard: true}
     }
   })
 })
