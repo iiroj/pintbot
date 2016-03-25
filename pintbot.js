@@ -176,9 +176,9 @@ pintbot.onText(/^\/clear$/, function(msg) {
   })
 })
 
-// When user sends /pub and some query, use it and location to find info about a pub. If there is location saved, pass to demandLocation()
-pintbot.onText(/^\/pub (.+)$/, function(msg, match) {
-  var query    = match[1],
+// When user sends any text not starting with /, use it to find info about a pub. If there is no location saved, pass to demandLocation()
+pintbot.onText(/^[^/].+/, function(msg) {
+  var query    = msg.text,
       msgId    = msg.id,
       fromId   = msg.from.id,
       fromName = msg.from.first_name,
@@ -191,8 +191,8 @@ pintbot.onText(/^\/pub (.+)$/, function(msg, match) {
   }
 })
 
-// When user sends /pub, given he has a saved location, suggest him some pubs
-pintbot.onText(/^\/pub$/, function(msg) {
+// When user sends /suggest, given he has a saved location, suggest him some pubs
+pintbot.onText(/^\/suggest$/, function(msg) {
   var msgId    = msg.id,
       fromId   = msg.from.id,
       fromName = msg.from.first_name,
@@ -210,7 +210,7 @@ pintbot.onText(/^\/help$/, function(msg) {
   var msgId    = msg.id,
       fromId   = msg.from.id,
       fromName = msg.from.first_name,
-      message  = "🍻 My function is to guide you to a pint of beer. Please send me your 📍location to start. \n\n /pub _Get pub suggestions, or information about a specific pub_ \n /location _Get your current saved location, or set a new geocodable location_ \n /clear _Clear your saved location_ \n /help _Show brief help message_"
+      message  = "🍻 My function is to guide you to a pint of beer. Please send me your 📍location to start. \n\n /suggest _Get pub suggestions_ \n /location _Get your current saved location, or set a new geocodable location (eg. /location Helsinki)_ \n /clear _Clear your saved location_ \n /help _Show brief help message_"
 
   pintbot.sendMessage(fromId, message, {
     disable_web_page_preview: true,
