@@ -24,7 +24,7 @@ function demandLocation(fromId, fromName) {
 // Suggest pubs based on the user's location
 function suggestPubs(fromId, fromName) {
   var location  = locations.get(fromId),
-      searchObj = { query: "beer", limit: 5 }
+      searchObj = { query: "beer", limit: 5, section: "drinks" }
 
   if (location instanceof Object) {
     var msg = "Here are some suggestions based on your 📍location, " + fromName + ".",
