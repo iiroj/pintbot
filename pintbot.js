@@ -25,7 +25,17 @@ function suggestPubs(msgId, fromId, fromName) {
   }
 
   foursquare.exploreVenues(searchObj, function(error, response) {
-    if (error) { return console.error(error) }
+    if (error) {
+      console.error(error)
+      pintbot.sendMessage(fromId, `Something went wrong, ${fromName}. Maybe try another 📍location?`, {
+        reply_to_message_id: msgId,
+        ReplyKeyboardHide: {
+          hide_keyboard: true
+        }
+      })
+      return
+    }
+
     var venues = response.response.groups[0].items
     var offerKeyboard = venues.map(function(obj) {
       return [obj.venue.name]
@@ -43,7 +53,7 @@ function suggestPubs(msgId, fromId, fromName) {
 }
 
 // Find information about a pub based on name and location
-function pubInfo(msgId, fromId, query, location) {
+function pubInfo(msgId, fromId, fromName, query, location) {
   var searchObj = {
     query: query,
     intent: "checkin",
@@ -58,10 +68,30 @@ function pubInfo(msgId, fromId, query, location) {
   }
 
   foursquare.searchVenues(searchObj, function(error, response) {
-    if (error) { return console.error(error) }
-    var pub = response.response.venues[0],
-        message = `🍻 *${pub.name}*`
+    if (error) {
+      console.error(error)
+      pintbot.sendMessage(fromId, `Something went wrong, ${fromName}. Maybe try another 📍location?`, {
+        reply_to_message_id: msgId,
+        ReplyKeyboardHide: {
+          hide_keyboard: true
+        }
+      })
+      return
+    }
 
+    var pub = response.response.venues[0]
+
+    if (pub == undefined) {
+      pintbot.sendMessage(fromId, `I found nothing, ${fromName}. Maybe try another 📍location?`, {
+        reply_to_message_id: msgId,
+        ReplyKeyboardHide: {
+          hide_keyboard: true
+        }
+      })
+      return
+    }
+
+    var message = `🍻 *${pub.name}*`
     if (pub.location.formattedAddress) {
       message += "\n " + pub.location.formattedAddress.join(", ")
     }
@@ -194,7 +224,7 @@ pintbot.onText(/^[^/].+/, function(msg) {
   if (location == undefined) {
     demandLocation(fromId, fromName)
   } else {
-    pubInfo(msgId, fromId, query, location)
+    pubInfo(msgId, fromId, fromName, query, location)
   }
 })
 
