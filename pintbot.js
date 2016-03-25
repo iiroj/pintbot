@@ -147,12 +147,12 @@ pintbot.onText(/^\/pub (.+)$/, function(msg, match) {
   }
 })
 
-// When user sends /help, check if we already have old location and pass it to findPubs()
+// When user sends /help, show brief help message
 pintbot.onText(/^\/help$/, function(msg) {
   var msgId    = msg.id,
       fromId   = msg.from.id,
       fromName = msg.from.first_name,
-      message  = "🍻 My function is to guide you to a pint of beer. Please send me your 📍location to start. \n\n /pub _Get information and directions to a specific pub near your location_ \n /location _Get your current saved location, or set a new geocodable location_"
+      message  = "🍻 My function is to guide you to a pint of beer. Please send me your 📍location to start. \n\n /pub _Get information and directions to a specific pub near your location_ \n /location _Get your current saved location, or set a new geocodable location_ \n /help _Show brief help message_"
 
   pintbot.sendMessage(fromId, message, {
     disable_web_page_preview: true,
