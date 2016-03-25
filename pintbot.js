@@ -28,9 +28,7 @@ function suggestPubs(msgId, fromId, fromName) {
     if (error) { return console.error(error) }
     var venues = response.response.groups[0].items
     var offerKeyboard = venues.map(function(obj) {
-      var arr = []
-      arr.push(obj.venue.name)
-      return arr 
+      return [obj.venue.name]
     })
 
     pintbot.sendMessage(fromId, msg, {
