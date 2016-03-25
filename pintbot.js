@@ -167,7 +167,7 @@ pintbot.onText(/^\/help$/, function(msg) {
   var msgId    = msg.id,
       fromId   = msg.from.id,
       fromName = msg.from.first_name,
-      message  = "🍻 My function is to guide you to a pint of beer. Please send me your 📍location to start. \n\n /pub _Get information and directions to a specific pub near your location_ \n /location _Get your current saved location, or set a new geocodable location_ \n /help _Show brief help message_"
+      message  = "🍻 My function is to guide you to a pint of beer. Please send me your 📍location to start. \n\n /pub _Get pub suggestions, or information about a specific pub_ \n /location _Get your current saved location, or set a new geocodable location_ \n /help _Show brief help message_"
 
   pintbot.sendMessage(fromId, message, {
     disable_web_page_preview: true,
