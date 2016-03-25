@@ -2,8 +2,9 @@
 
 >🍻 My function is to guide you to a pint of beer. Please send me your 📍location to start. 
 >
-> __/pub__ _Get information and directions to a specific pub near your location_  
+> __/pub__ _Get pub suggestions, or information about a specific pub_  
 > __/location__ _Get your current saved location, or set a new geocodable location_  
+> __/clear__ _Clear your saved location_  
 > __/help__ _Show brief help message_
 
 Pint Bot is a [Telegram](https://telegram.org) [bot](https://core.telegram.org/bots) powered by [Node.js](https://nodejs.org/en/) that uses the [Foursquare](https://foursquare.com) [API](https://developer.foursquare.com) to find pubs based on the user's location. Location can be set either by sending Pint Bot a location message, or by supplying it with a geocodable location description.
