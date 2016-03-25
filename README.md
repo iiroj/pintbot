@@ -19,6 +19,10 @@ Pint Bot is constantly under development and the latest version can be found on 
 
 ![Screenshot 2](https://raw.githubusercontent.com/iiroj/pintbot/master/screenshot%202.png)
 
+## To-do
+
+- All types of error handling... 😅
+
 ## Technology
 
 Pint Bot runs in a [Node.js](https://nodejs.org/en/) backend that [nginx](http://nginx.org) proxies requests to. Here's a brief overview of the server's files and what they do:
@@ -33,7 +37,7 @@ The _HTTP Server_ for Pint Bot. A [Connect](https://github.com/senchalabs/connec
 
 ### pintbot.js
 
-The _bot backend_. _pintbot.js_ initializes both the Foursquare API and the Telegram Bot API. _pintbot.js_ then receives requests from _server.js_ and responds according to the message content.
+The _bot backend_ running on [node-telegram-bot-api](https://github.com/yagop/node-telegram-bot-api). _pintbot.js_ initializes both the Foursquare API and the Telegram Bot API. _pintbot.js_ then receives requests from _server.js_ and responds according to the message content.
 
 ### config.js
 
