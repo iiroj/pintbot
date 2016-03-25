@@ -198,26 +198,6 @@ pintbot.onText(/^\/pub$/, function(msg) {
   }
 })
 
-pintbot.on("inline_query", function(msg) {
-  var msgId    = msg.id,
-      query    = msg.query,
-      fromId   = msg.from.id,
-      fromName = msg.from.first_name,
-      location = locations.get(fromId)
-
-  if (location == undefined) {
-    var message = "😅 Sorry, " + fromName + ", I can't suggest you pubs because I don't know where you are. You can send me your 📍location or describe it with /location."
-    pintbot.sendMessage(fromId, message, {
-      reply_to_message_id: msgId,
-      ReplyKeyboardHide: {
-        hide_keyboard: true
-      }
-    })
-  } else {
-    pubInfo(msgId, fromId, query, location)
-  }
-})
-
 // When user sends /help, show brief help message
 pintbot.onText(/^\/help$/, function(msg) {
   var msgId    = msg.id,
