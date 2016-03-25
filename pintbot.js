@@ -14,7 +14,11 @@ pintbot.setWebHook(config.telegramUrl + "/" + config.telegramToken)
 function demandLocation(fromId, fromName) {
   var message  = "😰 Sorry, " + fromName + ". I can't find you beer without knowing where you are. Please send me your 📍location or describe it with /location."
 
-  pintbot.sendMessage(fromId, message)
+  pintbot.sendMessage(fromId, message, {
+    ReplyKeyboardHide: {
+      hide_keyboard: true
+    }
+  })
 }
 
 // Find a list of pubs based on the user's location
@@ -36,7 +40,7 @@ function findPubs(fromId, fromName) {
     var venues = response.response.groups[0].items
     var offerKeyboard = venues.map(function(obj) {
       var arr = []
-      arr.push("/bar " + obj.venue.name)
+      arr.push("/pub " + obj.venue.name)
       return arr 
     })
 
@@ -51,17 +55,40 @@ function findPubs(fromId, fromName) {
 }
 
 // Find information about a pub based on name and location
-function pubInfo(query, location) {
-	var searchObj = {
-    ll: String(location.lat) + "," + String(location.lng),
-		query: query,
-		intent: "match"
-	}
+function pubInfo(msgId, fromId, query, location) {
+  var searchObj = {
+    query: query,
+    intent: "checkin",
+    limit: "1"
+  }
+  if (location instanceof Object) {
+    ll  = String(location.lat) + "," + String(location.lng)
+    searchObj["ll"] = ll
+  } else {
+    searchObj["near"] = location
+  }
 
-	foursquare.searchVenues(searchObj, function(error, response) {
-	  if (error) { return console.error(error) }
-	  console.log(response.response)
-	})
+  foursquare.searchVenues(searchObj, function(error, response) {
+    if (error) { return console.error(error) }
+    var pub = response.response.venues[0],
+        addr = pub.location.formattedAddress.join(", ")
+        message = "🍻 *" + pub.name + "* \n" + addr
+    console.log(pub.location.formattedAddress)
+    pintbot.sendLocation(fromId, pub.location.lat, pub.location.lng, {
+      disable_notification: true,
+      reply_to_message_id: msgId,
+      ReplyKeyboardHide: {
+        hide_keyboard: true
+      }
+    }).then(pintbot.sendMessage(fromId, message, {
+      disable_web_page_preview: true,
+      parse_mode: "Markdown",
+      reply_to_message_id: msgId,
+      ReplyKeyboardHide: {
+        hide_keyboard: true
+      }
+    }))
+  })
 }
 
 // When user sends a location, save it and pass to findPubs()
@@ -98,12 +125,17 @@ pintbot.onText(/^\/location$/, function(msg) {
     var result = "My records show you are in " + location + ", " + fromName + "."
   }
 
-  pintbot.sendMessage(fromId, result)
+  pintbot.sendMessage(fromId, result, {
+    ReplyKeyboardHide: {
+      hide_keyboard: true
+    }
+  })
 })
 
-// When users sends /bar, use it and location to find info about a pub. If there is location saved, pass to demandLocation()
-pintbot.onText(/^\/bar (.+)$/, function(msg, match) {
-	var query    = match[1],
+// When users sends /pub, use it and location to find info about a pub. If there is location saved, pass to demandLocation()
+pintbot.onText(/^\/pub (.+)$/, function(msg, match) {
+  var query    = match[1],
+      msgId    = msg.id,
       fromId   = msg.from.id,
       fromName = msg.from.first_name,
       location = locations.get(fromId)
@@ -111,8 +143,25 @@ pintbot.onText(/^\/bar (.+)$/, function(msg, match) {
   if (location == undefined) {
     demandLocation(fromId, fromName)
   } else {
-    pubInfo(query, location)
+    pubInfo(msgId, fromId, query, location)
   }
+})
+
+// When user sends /help, check if we already have old location and pass it to findPubs()
+pintbot.onText(/^\/help$/, function(msg) {
+  var msgId    = msg.id,
+      fromId   = msg.from.id,
+      fromName = msg.from.first_name,
+      message  = "🍻 My function is to guide you to a pint of beer. Please send me your 📍location to start. \n\n /pub _Get information and directions to a specific pub near your location_ \n /location _Get your current saved location, or set a new geocodable location_"
+
+  pintbot.sendMessage(fromId, message, {
+    disable_web_page_preview: true,
+    parse_mode: "Markdown",
+    reply_to_message_id: msgId,
+    ReplyKeyboardHide: {
+      hide_keyboard: true
+    }
+  })
 })
 
 module.exports = pintbot
