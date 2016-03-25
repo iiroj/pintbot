@@ -59,7 +59,8 @@ function pubInfo(msgId, fromId, query, location) {
   var searchObj = {
     query: query,
     intent: "checkin",
-    limit: "1"
+    limit: "1",
+    categoryId: "4bf58dd8d48988d116941735,4bf58dd8d48988d11b941735" // Limit to Bars, Pubs
   }
   if (location instanceof Object) {
     ll  = String(location.lat) + "," + String(location.lng)
