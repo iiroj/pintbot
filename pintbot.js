@@ -14,7 +14,7 @@ function suggestPubs(msgId, fromId, fromName) {
   var location  = locations.get(fromId),
       searchObj = { query: "beer", limit: 5, section: "drinks" }
 
-  if (location instanceof Object) {
+  if (location.lat && location.lng) {
     var msg = `Here are some suggestions based on your 📍location, ${fromName}.`,
         ll  = String(location.lat) + "," + String(location.lng)
     searchObj["ll"] = ll
