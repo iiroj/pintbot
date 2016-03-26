@@ -92,8 +92,7 @@ function pubInfo(msgId, fromId, fromName, query, location) {
       message += "\n " + pub.location.formattedAddress.join(", ")
     }
     if (pub.location.distance) {
-      message += `
-_(${pub.location.distance} meters away)_`
+      message += "\n_(" + pub.location.distance + " meters away)_"
     }
     if (pub.url | pub.contact.phone | pub.contact.formattedPhone) {
       message += "\n\n"
@@ -107,8 +106,7 @@ _(${pub.location.distance} meters away)_`
       }
     }
     if (pub.menu) {
-      message += `
-[🍺 Menu](${pub.menu.url})`
+      message += "[🍺 Menu](" + pub.menu.url + ")"
     }
 
     pintbot.sendLocation(fromId, pub.location.lat, pub.location.lng, {
