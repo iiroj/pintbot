@@ -106,7 +106,7 @@ function pubInfo(msgId, fromId, fromName, query, location) {
       }
     }
     if (pub.menu) {
-      message += "[🍺 Menu](" + pub.menu.url + ")"
+      message += "\n[🍺 Menu](" + pub.menu.url + ")"
     }
 
     pintbot.sendLocation(fromId, pub.location.lat, pub.location.lng, {
