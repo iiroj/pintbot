@@ -56,7 +56,7 @@ function pubInfo(msgId, fromId, fromName, query, location) {
     limit: "1",
     categoryId: "4bf58dd8d48988d116941735,4bf58dd8d48988d11b941735" // Limit to Bars, Pubs
   }
-  if (location instanceof Object) {
+  if (location.lat && location.lng) {
     ll  = String(location.lat) + "," + String(location.lng)
     searchObj["ll"] = ll
   } else {
