@@ -41,6 +41,7 @@ function suggestPubs(msgId, fromId, fromName) {
     pintbot.sendMessage(fromId, msg, {
       reply_to_message_id: msgId,
       reply_markup: {
+        force_reply: true,
         keyboard: offerKeyboard,
         one_time_keyboard: true
       }
@@ -137,17 +138,6 @@ pintbot.on("location", function(msg) {
   suggestPubs(msgId, fromId, fromName)
 })
 
-// When user sends /location with some query, save the query as a location string
-pintbot.onText(/^\/location (.+)$/, function(msg, match) {
-  var query    = match[1],
-      msgId    = msg.id,
-      fromId   = msg.from.id,
-      fromName = msg.from.first_name
-
-  locations.set(fromId, query)
-  suggestPubs(msgId, fromId, fromName)
-})
-
 // When user sends /location, show him his saved location
 pintbot.onText(/^\/location$/, function(msg) {
   var fromId   = msg.from.id,
@@ -155,18 +145,41 @@ pintbot.onText(/^\/location$/, function(msg) {
       location = locations.get(fromId)
 
   if (location == undefined) {
-    var result = `😰 I don't know where you are, ${fromName}. Please send me your 📍location or describe it with /location.`
+    var result = `😰 I don't know where you are, ${fromName}`
   } else if (location instanceof Object) {
     var coords = String(location.lat) + "," + String(location.lng),
-        result = `My records show you are at 📍(${coords}), ${fromName}`
+        result = `My records show you are at 📍(${coords})`
   } else {
-    var result = `My records show you are in 💭${location}, ${fromName}.`
+    var result = `My records show you are in 💭${location}`
   }
+  result += `, ${fromName}. To update your location, reply to this message with a *location name* _(for example: "Helsinki")_, or "*cancel*".`
 
   pintbot.sendMessage(fromId, result, {
+    parse_mode: "Markdown",
     reply_markup: {
-      hide_keyboard: true
+      force_reply: true
     }
+  }).then(function(sent) {
+    var chatId = sent.chat.id,
+        msgId  = sent.message_id
+    pintbot.onReplyToMessage(chatId, msgId, function (msg) {
+      if (msg.text == "Cancel" || msg.text == "cancel") {
+        pintbot.sendMessage(fromId, `Location update cancelled.`, {
+          reply_markup: {
+            reply_to_message_id: msg.id,
+            hide_keyboard: true
+          }
+        })
+        return
+      }
+      locations.set(fromId, msg.text)
+      pintbot.sendMessage(fromId, `Location updated to 💭${msg.text}.`, {
+        reply_markup: {
+          reply_to_message_id: msg.id,
+          hide_keyboard: true
+        }
+      })
+    })
   })
 })
 
@@ -215,6 +228,9 @@ pintbot.onText(/^[^/].+/, function(msg) {
       fromName = msg.from.first_name,
       location = locations.get(fromId)
 
+  if (msg.reply_to_message) {
+    return
+  }
   if (location == undefined) {
     demandLocation(fromId, fromName)
   } else {
@@ -246,7 +262,9 @@ pintbot.onText(/^\/help$/, function(msg) {
 /suggest _Get pub suggestions_
 /location _Get your current saved location, or set a new geocodable location (eg. /location Helsinki)_
 /clear _Clear your saved location_
-/help _Show brief help message_`
+/help _Show brief help message_
+
+[About Pint Bot](https://github.com/iiroj/pintbot)`
 
   pintbot.sendMessage(fromId, message, {
     disable_web_page_preview: true,
