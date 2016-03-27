@@ -2,13 +2,10 @@ var config       = require("./config.js"),
     Dirty        = require("dirty"),
     Foursquare   = require("foursquare-venues"),
     geocoder     = require("geocoder"),
-    GooglePlaces = require('google-places'),
     Bot          = require('node-telegram-bot-api')
 
 var locations  = Dirty("locations.json"),
-    locations2 = Dirty("locations2.json"),
     foursquare = new Foursquare(config.foursquareClientId, config.foursquareClientSecret),
-    places     = new GooglePlaces(config.googleApiKey),
     pintbot    = new Bot(config.telegramToken)
 
 pintbot.setWebHook(config.telegramUrl + "/" + config.telegramToken)
@@ -16,16 +13,13 @@ pintbot.setWebHook(config.telegramUrl + "/" + config.telegramToken)
 // Suggest pubs based on the user's location
 function suggestPubs(msgId, fromId, fromName) {
   var location  = locations.get(fromId),
-      searchObj = { query: "beer", limit: 5, section: "drinks" }
-
-  if (location.lat && location.lng) {
-    var msg = `Here are some suggestions based on your 📍location, ${fromName}.`,
-        ll  = String(location.lat) + "," + String(location.lng)
-    searchObj["ll"] = ll
-  } else {
-    var msg  = `Here are some suggestions based on your 💭location, ${fromName}.`
-    searchObj["near"] = location
-  }
+      message   = `Here are some suggestions based on your location, ${fromName}.`,
+      searchObj = {
+        query: "beer",
+        limit: 5,
+        ll: String(location.geometry.lat) + "," + String(location.geometry.lng),
+        section: "drinks"
+      }
 
   foursquare.exploreVenues(searchObj, function(error, response) {
     if (error) {
@@ -42,7 +36,7 @@ function suggestPubs(msgId, fromId, fromName) {
     var venues = response.response.groups[0].items
     var offerKeyboard = venues.map(obj => [obj.venue.name])
 
-    pintbot.sendMessage(fromId, msg, {
+    pintbot.sendMessage(fromId, message, {
       reply_to_message_id: msgId,
       reply_markup: {
         force_reply: true,
@@ -135,16 +129,12 @@ function pubInfo(msgId, fromId, fromName, query, location) {
 pintbot.on("location", function(msg) {
   var msgId    = msg.id,
       fromId   = msg.from.id,
-      fromName = msg.from.first_name,
-      location = { lat: msg.location.latitude, lng: msg.location.longitude }
-
-  locations.set(fromId, location)
-  suggestPubs(msgId, fromId, fromName)
+      fromName = msg.from.first_name
 
   geocoder.reverseGeocode( msg.location.latitude, msg.location.longitude, function ( error, response ) {
     if (error) { throw new GeocoderException(error.status) }
     var location = {
-      formatted_address: null,
+      formatted_address: undefined,
       geometry: {
         lat: msg.location.latitude,
         lng: msg.location.longitude
@@ -153,7 +143,8 @@ pintbot.on("location", function(msg) {
     if (response.results[0].formatted_address) {
       location.formatted_address = response.results[0].formatted_address
     }
-    locations2.set(fromId, location)
+    locations.set(fromId, location)
+    suggestPubs(msgId, fromId, fromName)
   })
 })
 
@@ -161,15 +152,20 @@ pintbot.on("location", function(msg) {
 pintbot.onText(/^\/location$/, function(msg) {
   var fromId   = msg.from.id,
       fromName = msg.from.first_name,
-      location = locations.get(fromId)
+      location = locations.get(fromId),
+      locationName = ""
 
   if (location == undefined) {
-    var result = `😰 I don't know where you are, ${fromName}`
-  } else if (location instanceof Object) {
-    var coords = String(location.lat) + "," + String(location.lng),
-        result = `My records show you are at 📍(${coords})`
+    var result = `😰 I don't know where you are`
   } else {
-    var result = `My records show you are in 💭${location}`
+    if (location.formatted_address !== undefined) {
+      locationName = location.formatted_address
+      var result   = `My records show you are in ${locationName}`
+    } else {
+      var coords   = String(location.geometry.lat) + "," + String(location.lng)
+      locationName = coords
+      var result   = `My records show you are at (${locationName})`
+    }
   }
   result += `, ${fromName}. To update your location, reply to this message with a *location name* _(for example: "Helsinki")_, or "*cancel*".`
 
@@ -207,10 +203,9 @@ pintbot.onText(/^\/location$/, function(msg) {
           location.geometry.lat = response.results[0].geometry.location.lat
           location.geometry.lng = response.results[0].geometry.location.lng
         }
-        locations2.set(fromId, location)
+        locations.set(fromId, location)
       })
-      locations.set(fromId, msg.text)
-      pintbot.sendMessage(fromId, `Location updated to 💭${msg.text}.`, {
+      pintbot.sendMessage(fromId, `Location updated to ${locationName}.`, {
         reply_markup: {
           reply_to_message_id: msg.id,
           hide_keyboard: true
