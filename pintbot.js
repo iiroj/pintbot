@@ -24,7 +24,7 @@ function suggestPubs(msgId, fromId, fromName) {
   foursquare.exploreVenues(searchObj, function(error, response) {
     if (error) {
       console.error(error)
-      pintbot.sendMessage(fromId, `Something went wrong, ${fromName}. Maybe try another 📍location?`, {
+      pintbot.sendMessage(fromId, `Something went wrong, ${fromName}. Maybe try another location?`, {
         reply_to_message_id: msgId,
         reply_markup: {
           hide_keyboard: true
@@ -53,19 +53,14 @@ function pubInfo(msgId, fromId, fromName, query, location) {
     query: query,
     intent: "checkin",
     limit: "1",
+    ll: String(location.geometry.lat) + "," + String(location.geometry.lng),
     categoryId: "4bf58dd8d48988d116941735,4bf58dd8d48988d11b941735" // Limit to Bars, Pubs
-  }
-  if (location.lat && location.lng) {
-    ll  = String(location.lat) + "," + String(location.lng)
-    searchObj["ll"] = ll
-  } else {
-    searchObj["near"] = location
   }
 
   foursquare.searchVenues(searchObj, function(error, response) {
     if (error) {
       console.error(error)
-      pintbot.sendMessage(fromId, `Something went wrong, ${fromName}. Maybe try another 📍location?`, {
+      pintbot.sendMessage(fromId, `Something went wrong, ${fromName}. Maybe try another location?`, {
         reply_to_message_id: msgId,
         reply_markup: {
           hide_keyboard: true
@@ -77,7 +72,7 @@ function pubInfo(msgId, fromId, fromName, query, location) {
     var pub = response.response.venues[0]
 
     if (pub == undefined) {
-      pintbot.sendMessage(fromId, `I found nothing, ${fromName}. Maybe try another 📍location?`, {
+      pintbot.sendMessage(fromId, `I found nothing, ${fromName}. Maybe try another location?`, {
         reply_to_message_id: msgId,
         reply_markup: {
           hide_keyboard: true
@@ -156,7 +151,7 @@ pintbot.onText(/^\/location$/, function(msg) {
       locationName = ""
 
   if (location == undefined) {
-    var result = `😰 I don't know where you are`
+    var result = `😰 I don't know where you are, ${fromName}`
   } else {
     if (location.formatted_address !== undefined) {
       locationName = location.formatted_address
@@ -167,7 +162,7 @@ pintbot.onText(/^\/location$/, function(msg) {
       var result   = `My records show you are at (${locationName})`
     }
   }
-  result += `, ${fromName}. To update your location, reply to this message with a *location name* _(for example: "Helsinki")_, or "*cancel*".`
+  result += `. To update your location, reply to this message with a *location name* _(for example: "Helsinki")_, or "*cancel*".`
 
   pintbot.sendMessage(fromId, result, {
     parse_mode: "Markdown",
@@ -217,7 +212,7 @@ pintbot.onText(/^\/location$/, function(msg) {
 
 // Notify user in case we do not have his location saved
 function demandLocation(fromId, fromName) {
-  var message  = `😰 Sorry, ${fromName}. Please send me your 📍location or describe it with /location so that I can help you.`
+  var message  = `😰 Sorry, ${fromName}. Please send me your location or describe it with /location so that I can help you.`
 
   pintbot.sendMessage(fromId, message, {
     reply_markup: {
@@ -236,11 +231,7 @@ pintbot.onText(/^\/clear$/, function(msg) {
   if (location == undefined) {
     var result = `😅 Don't worry, ${fromName}, I didn't know your location anyway.`
   } else {
-    if (location instanceof Object) {
-      var result = `I've cleared your 📍location successfully, ${fromName}`
-    } else {
-      var result = `I've cleared your 💭location successfully, ${fromName}`
-    }
+    var result = `I've cleared your location successfully, ${fromName}`
     locations.set(fromId, undefined)
   }
 
