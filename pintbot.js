@@ -1,10 +1,14 @@
-var config     = require("./config.js"),
-    Dirty      = require("dirty"),
-    Foursquare = require("foursquare-venues"),
-    Bot        = require('node-telegram-bot-api')
+var config       = require("./config.js"),
+    Dirty        = require("dirty"),
+    Foursquare   = require("foursquare-venues"),
+    geocoder     = require("geocoder"),
+    GooglePlaces = require('google-places'),
+    Bot          = require('node-telegram-bot-api')
 
 var locations  = Dirty("locations.json"),
+    locations2 = Dirty("locations2.json"),
     foursquare = new Foursquare(config.foursquareClientId, config.foursquareClientSecret),
+    places     = new GooglePlaces(config.googleApiKey),
     pintbot    = new Bot(config.telegramToken)
 
 pintbot.setWebHook(config.telegramUrl + "/" + config.telegramToken)
@@ -136,6 +140,21 @@ pintbot.on("location", function(msg) {
 
   locations.set(fromId, location)
   suggestPubs(msgId, fromId, fromName)
+
+  geocoder.reverseGeocode( msg.location.latitude, msg.location.longitude, function ( error, response ) {
+    if (error) { throw new GeocoderException(error.status) }
+    var location = {
+      formatted_address: null,
+      geometry: {
+        lat: msg.location.latitude,
+        lng: msg.location.longitude
+      }
+    }
+    if (response.results[0].formatted_address) {
+      location.formatted_address = response.results[0].formatted_address
+    }
+    locations2.set(fromId, location)
+  })
 })
 
 // When user sends /location, show him his saved location
@@ -172,6 +191,24 @@ pintbot.onText(/^\/location$/, function(msg) {
         })
         return
       }
+      geocoder.geocode( msg.text, function ( error, response ) {
+        if (error) { throw new GeocoderException(error.status) }
+        var location = {
+          formatted_address: msg.text,
+          geometry: {
+            lat: null,
+            lng: null
+          }
+        }
+        if (response.results[0].formatted_address) {
+          location.formatted_address = response.results[0].formatted_address
+        }
+        if (response.results[0].geometry.location) {
+          location.geometry.lat = response.results[0].geometry.location.lat
+          location.geometry.lng = response.results[0].geometry.location.lng
+        }
+        locations2.set(fromId, location)
+      })
       locations.set(fromId, msg.text)
       pintbot.sendMessage(fromId, `Location updated to 💭${msg.text}.`, {
         reply_markup: {
@@ -275,5 +312,11 @@ pintbot.onText(/^\/help$/, function(msg) {
     }
   })
 })
+
+// Error handling
+function GeocoderException(message) {
+  this.name = "GeocoderException"
+  this.message = message
+}
 
 module.exports = pintbot
