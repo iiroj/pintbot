@@ -47,7 +47,17 @@ The configuration file contains the keys for both the Telegram bot and Foursquar
 
 ### locations.json
 
-The key-value store for _pintbot.js_ that uses [node-dirty](https://github.com/felixge/node-dirty) to save the users' last-known locations. locations.json contains key-values in the format `{key: userId, value: location}`, where `location` is either coordinate object `{lat: X, lng: Y}` or a geocodable description such as `Helsinki, Finland`.
+The key-value store for _pintbot.js_ that uses [node-dirty](https://github.com/felixge/node-dirty) to save the users' last-known locations geocoded with [Google Maps Geocoding API](https://developers.google.com/maps/documentation/geocoding/intro) using [geocoder](https://github.com/wyattdanger/geocoder). locations.json contains key-values in the following format:
+
+    { "key" : 1234,
+      "value: {
+        "formatted_addres": "Geocoded name",
+        "geometry": {
+            "lat": XXX,
+            "lng": YYY
+        }
+      }
+    }
 
 ## Licence
 
