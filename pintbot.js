@@ -4,7 +4,7 @@ var config       = require("./config.js"),
     geocoder     = require("geocoder"),
     Bot          = require('node-telegram-bot-api')
 
-var locations  = Dirty("locations.json"),
+var locations  = Dirty(__dirname + "/locations.json"),
     foursquare = new Foursquare(config.foursquareClientId, config.foursquareClientSecret),
     pintbot    = new Bot(config.telegramToken)
 
