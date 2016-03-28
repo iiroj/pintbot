@@ -1,48 +1,39 @@
 var config       = require("./config.js"),
     Dirty        = require("dirty"),
-    Foursquare   = require("foursquare-venues"),
     geocoder     = require("geocoder"),
     GooglePlaces = require("googleplaces"),
     Bot          = require('node-telegram-bot-api')
 
 var locations  = Dirty(__dirname + "/locations.json"),
-    foursquare = new Foursquare(config.foursquareClientId, config.foursquareClientSecret),
     places     = new GooglePlaces(config.googleApiKey, "json"),
     pintbot    = new Bot(config.telegramToken)
 
 pintbot.setWebHook(config.telegramUrl + "/" + config.telegramToken)
 
 // Suggest pubs based on the user's location
-function suggestPubs(msgId, fromId, fromName) {
-  var location  = locations.get(fromId),
-      message   = `Here are some suggestions based on your location, ${fromName}.`,
-      searchObj = {
-        query: "beer",
-        limit: 5,
-        ll: String(location.geometry.lat) + "," + String(location.geometry.lng),
-        section: "drinks"
-      }
+function suggestPubs(msg) {
+  var msgId      = msg.id,
+      fromId     = msg.from.id,
+      fromName   = msg.from.first_name,
+      location   = locations.get(fromId),
+      message    = `Here are some suggestions based on your location, ${fromName}.`
+      parameters = {
+    keyword: "beer",
+    location: [location.geometry.lat, location.geometry.lng],
+    rankby: "distance"
+  }
+  places.placeSearch(parameters, function(error, response) {
+    if (error) { throw new PlaceSearchException(error.status) }
+    if (response.status == "ZERO_RESULTS") { throw new PlaceSearchException(response.status) }
 
-  foursquare.exploreVenues(searchObj, function(error, response) {
-    if (error) {
-      console.error(error)
-      pintbot.sendMessage(fromId, `Something went wrong, ${fromName}. Maybe try another location?`, {
-        reply_to_message_id: msgId,
-        reply_markup: {
-          hide_keyboard: true
-        }
-      })
-      return
-    }
-
-    var venues = response.response.groups[0].items
-    var offerKeyboard = venues.map(obj => [obj.venue.name])
+    var results  = response.results.slice(0,5),
+        keyboard = results.map(result => [result.name])
 
     pintbot.sendMessage(fromId, message, {
       reply_to_message_id: msgId,
       reply_markup: {
         force_reply: true,
-        keyboard: offerKeyboard,
+        keyboard: keyboard,
         one_time_keyboard: true
       }
     })
@@ -107,10 +98,6 @@ function pubInfo(msgId, fromId, fromName, query, location) {
 
 // When user sends a location, save it and pass to suggestPubs()
 pintbot.on("location", function(msg) {
-  var msgId    = msg.id,
-      fromId   = msg.from.id,
-      fromName = msg.from.first_name
-
   geocoder.reverseGeocode( msg.location.latitude, msg.location.longitude, function ( error, response ) {
     if (error) { throw new GeocoderException(error.status) }
     var location = {
@@ -124,7 +111,7 @@ pintbot.on("location", function(msg) {
       location.formatted_address = response.results[0].formatted_address
     }
     locations.set(fromId, location)
-    suggestPubs(msgId, fromId, fromName)
+    suggestPubs(msg)
   })
 })
 
@@ -248,15 +235,14 @@ pintbot.onText(/^[^/].+/, function(msg) {
 
 // When user sends /suggest, given he has a saved location, suggest him some pubs
 pintbot.onText(/^\/suggest$/, function(msg) {
-  var msgId    = msg.id,
-      fromId   = msg.from.id,
+  var fromId   = msg.from.id,
       fromName = msg.from.first_name,
       location = locations.get(fromId)
 
   if (location == undefined) {
     demandLocation(fromId, fromName)
   } else {
-    suggestPubs(msgId, fromId, fromName)
+    suggestPubs(msg)
   }
 })
 
