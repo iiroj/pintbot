@@ -19,7 +19,7 @@ function suggestPubs(msg) {
       message    = `Here are some suggestions based on your location, ${fromName}.`
       parameters = {
     location: [location.geometry.lat, location.geometry.lng],
-    rankby: "distance",
+    radius: 2000,
     type: "bar"
   }
   places.placeSearch(parameters, function(error, response) {
