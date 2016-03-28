@@ -115,7 +115,7 @@ pintbot.on("location", function(msg) {
     if (response.results[0].formatted_address) {
       location.formatted_address = response.results[0].formatted_address
     }
-    locations.set(fromId, location)
+    locations.set(msg.from.id, location)
     suggestPubs(msg)
   })
 })
