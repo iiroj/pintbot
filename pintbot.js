@@ -85,16 +85,13 @@ function pubInfo(msg) {
 
       pintbot.sendLocation(fromId, response.result.geometry.location.lat, response.result.geometry.location.lng, {
         disable_notification: true,
-        reply_to_message_id: msgId,
-        reply_markup: {
-          hide_keyboard: true
-        }
+        reply_to_message_id: msgId
       }).then(pintbot.sendMessage(fromId, message, {
         disable_web_page_preview: true,
         parse_mode: "Markdown",
         reply_to_message_id: msgId,
         reply_markup: {
-          hide_keyboard: true
+          keyboard: recents.get(fromId)
         }
       }))
 
@@ -105,13 +102,11 @@ function pubInfo(msg) {
 function updateRecents() {
   var recent = recents.get(fromId)
   if (recent == undefined) {
-    var recent = [[msg.text]]
+    var recent = [msg.text]
   } else {
-    Array.prototype.push.apply(recent, [[msg.text]])
+    Array.prototype.push.apply(recent, [msg.text])
   }
-  recents.set(fromId, recent.slice(-3), function() {
-    return recents.get(fromId)
-  })
+  recents.set(fromId, recent.slice(-3))
 }
 
 // When user sends a location, save it and pass to suggestPubs()
@@ -165,9 +160,9 @@ pintbot.onText(/^\/location$/, function(msg) {
     pintbot.onReplyToMessage(chatId, msgId, function (msg) {
       if (msg.text == "Cancel" || msg.text == "cancel") {
         pintbot.sendMessage(fromId, `Location update cancelled.`, {
+          reply_to_message_id: msg.id,
           reply_markup: {
-            reply_to_message_id: msg.id,
-            hide_keyboard: true
+            keyboard: recents.get(fromId)
           }
         })
         return
@@ -190,9 +185,9 @@ pintbot.onText(/^\/location$/, function(msg) {
         }
         locations.set(fromId, location)
         pintbot.sendMessage(fromId, `Location updated to ${location.formatted_address}.`, {
+          reply_to_message_id: msg.id,
           reply_markup: {
-            reply_to_message_id: msg.id,
-            hide_keyboard: true
+            keyboard: recents.get(fromId)
           }
         })
       })
@@ -242,6 +237,9 @@ pintbot.onText(/^[^/].+/, function(msg) {
   if (msg.reply_to_message) {
     return
   }
+
+  updateRecents()
+
   if (location == undefined) {
     demandLocation(fromId, fromName)
   } else {
@@ -281,7 +279,7 @@ pintbot.onText(/^\/help$/, function(msg) {
     parse_mode: "Markdown",
     reply_to_message_id: msgId,
     reply_markup: {
-      hide_keyboard: true
+      keyboard: recents.get(fromId)
     }
   })
 })
