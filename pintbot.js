@@ -272,20 +272,20 @@ pintbot.onText(/^\/help$/, function(msg) {
 })
 
 // Error handling
-function GeocoderException(error, msg) {
+function GeocoderException(status, msg) {
   this.name = "GeocoderException"
-  this.error = error
-  this.msg = message
+  this.status = status
+  this.msg = msg
 }
-function PlaceSearchException(error, msg) {
+function PlaceSearchException(status, msg) {
   this.name = "GeocoderException"
-  this.error = error
-  this.msg = message
+  this.status = status
+  this.msg = msg
 }
-function PlaceDetailsException(error, msg) {
+function PlaceDetailsException(status, msg) {
   this.name = "GeocoderException"
-  this.error = error
-  this.msg = message
+  this.status = status
+  this.msg = msg
 }
 
 module.exports = pintbot
