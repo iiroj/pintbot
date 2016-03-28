@@ -99,14 +99,14 @@ function pubInfo(msg) {
   })
 }
 
-function updateRecents() {
-  var recent = recents.get(fromId)
+function updateRecents(msg) {
+  var recent = recents.get(msg.from.id)
   if (recent == undefined) {
     var recent = [msg.text]
   } else {
     Array.prototype.push.apply(recent, [msg.text])
   }
-  recents.set(fromId, recent.slice(-3))
+  recents.set(msg.from.id, recent.slice(-3))
 }
 
 // When user sends a location, save it and pass to suggestPubs()
@@ -238,7 +238,7 @@ pintbot.onText(/^[^/].+/, function(msg) {
     return
   }
 
-  updateRecents()
+  updateRecents(msg)
 
   if (location == undefined) {
     demandLocation(fromId, fromName)
