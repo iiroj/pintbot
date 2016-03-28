@@ -55,7 +55,7 @@ function pubInfo(msg) {
     if (error) { PlaceSearchException(error.status, msg); return }
     if (response.status == "ZERO_RESULTS") { PlaceSearchException(response.status, msg); return }
 
-    places.placeDetailsRequest({reference:response.results[0].reference}, function (error, response) {
+    places.placeDetailsRequest({place_id:response.results[0].place_id}, function (error, response) {
       if (error) { throw new PlaceDetailsException(error.status, msg) }
 
       var message = `🍻 *${response.result.name}*`
