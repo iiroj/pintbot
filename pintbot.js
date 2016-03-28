@@ -18,9 +18,9 @@ function suggestPubs(msg) {
       location   = locations.get(fromId),
       message    = `Here are some suggestions based on your location, ${fromName}.`
       parameters = {
-    keyword: "beer",
     location: [location.geometry.lat, location.geometry.lng],
-    rankby: "distance"
+    rankby: "distance",
+    type: "bar"
   }
   places.placeSearch(parameters, function(error, response) {
     if (error) { throw new PlaceSearchException(error.status, msg) }
