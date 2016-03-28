@@ -52,8 +52,8 @@ function pubInfo(msg) {
       }
 
   places.placeSearch(parameters, function(error, response) {
-    if (error) { throw new PlaceSearchException(error.status, msg) }
-    if (response.status == "ZERO_RESULTS") { throw new PlaceSearchException(response.status, msg) }
+    if (error) { PlaceSearchException(error.status, msg); return }
+    if (response.status == "ZERO_RESULTS") { PlaceSearchException(response.status, msg); return }
 
     places.placeDetailsRequest({reference:response.results[0].reference}, function (error, response) {
       if (error) { throw new PlaceDetailsException(error.status, msg) }
@@ -102,7 +102,7 @@ function pubInfo(msg) {
 // When user sends a location, save it and pass to suggestPubs()
 pintbot.on("location", function(msg) {
   geocoder.reverseGeocode( msg.location.latitude, msg.location.longitude, function ( error, response ) {
-    if (error) { throw new GeocoderException(error.status, msg) }
+    if (error) { GeocoderException(error.status, msg); return }
     var location = {
       formatted_address: undefined,
       geometry: {
@@ -158,7 +158,7 @@ pintbot.onText(/^\/location$/, function(msg) {
         return
       }
       geocoder.geocode( msg.text, function ( error, response ) {
-        if (error) { throw new GeocoderException(error.status, msg) }
+        if (error) { GeocoderException(error.status, msg); return }
         var location = {
           formatted_address: msg.text,
           geometry: {
@@ -272,20 +272,41 @@ pintbot.onText(/^\/help$/, function(msg) {
 })
 
 // Error handling
+
 function GeocoderException(status, msg) {
-  this.name = "GeocoderException"
-  this.status = status
-  this.msg = msg
-}
-function PlaceSearchException(status, msg) {
-  this.name = "GeocoderException"
-  this.status = status
-  this.msg = msg
-}
-function PlaceDetailsException(status, msg) {
-  this.name = "GeocoderException"
-  this.status = status
-  this.msg = msg
+  var message = "😰 I couldn't understand your location. Can you try another?"
+  pintbot.sendMessage(msg.from.id, message, {
+    reply_markup: {
+      hide_keyboard: true
+    }
+  })
+  console.error("msg: " + msg.text + "\nGeocoderException: " + status)
 }
 
+function PlaceSearchException(status, msg) {
+  var message
+  if (status == "ZERO_RESULTS") {
+    message = "😞 I found nothing. Try another name, or maybe update your location."
+  } else {
+    message = "😰 Something unexpected happened. Try another name, or maybe update your location."
+  }
+  pintbot.sendMessage(msg.from.id, message, {
+    reply_markup: {
+      hide_keyboard: true
+    }
+  })
+  console.error("msg: " + msg.text + "\nPlaceSearchException: " + status)
+}
+
+function PlaceDetailsException(status, msg) {
+  var message = "😞 I found nothing. Try another name, or maybe update your location."
+  pintbot.sendMessage(msg.from.id, message, {
+    reply_markup: {
+      hide_keyboard: true
+    }
+  })
+  console.error("msg: " + msg.text + "\nPlaceDetailsException: " + status)
+}
+
+// Export
 module.exports = pintbot
