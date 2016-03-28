@@ -23,8 +23,8 @@ function suggestPubs(msg) {
     rankby: "distance"
   }
   places.placeSearch(parameters, function(error, response) {
-    if (error) { throw new PlaceSearchException(error.status) }
-    if (response.status == "ZERO_RESULTS") { throw new PlaceSearchException(response.status) }
+    if (error) { throw new PlaceSearchException(error.status, msg) }
+    if (response.status == "ZERO_RESULTS") { throw new PlaceSearchException(response.status, msg) }
 
     var results  = response.results.slice(0,5),
         keyboard = results.map(result => [result.name])
@@ -52,11 +52,11 @@ function pubInfo(msg) {
       }
 
   places.placeSearch(parameters, function(error, response) {
-    if (error) { throw new PlaceSearchException(error.status) }
-    if (response.status == "ZERO_RESULTS") { throw new PlaceSearchException(response.status) }
+    if (error) { throw new PlaceSearchException(error.status, msg) }
+    if (response.status == "ZERO_RESULTS") { throw new PlaceSearchException(response.status, msg) }
 
     places.placeDetailsRequest({reference:response.results[0].reference}, function (error, response) {
-      if (error) { throw new PlaceDetailsException(error.status) }
+      if (error) { throw new PlaceDetailsException(error.status, msg) }
 
       var message = `🍻 *${response.result.name}*`
       if (response.result.formatted_address) {
@@ -102,7 +102,7 @@ function pubInfo(msg) {
 // When user sends a location, save it and pass to suggestPubs()
 pintbot.on("location", function(msg) {
   geocoder.reverseGeocode( msg.location.latitude, msg.location.longitude, function ( error, response ) {
-    if (error) { throw new GeocoderException(error.status) }
+    if (error) { throw new GeocoderException(error.status, msg) }
     var location = {
       formatted_address: undefined,
       geometry: {
@@ -158,7 +158,7 @@ pintbot.onText(/^\/location$/, function(msg) {
         return
       }
       geocoder.geocode( msg.text, function ( error, response ) {
-        if (error) { throw new GeocoderException(error.status) }
+        if (error) { throw new GeocoderException(error.status, msg) }
         var location = {
           formatted_address: msg.text,
           geometry: {
@@ -272,17 +272,20 @@ pintbot.onText(/^\/help$/, function(msg) {
 })
 
 // Error handling
-function GeocoderException(message) {
+function GeocoderException(error, msg) {
   this.name = "GeocoderException"
-  this.message = message
+  this.error = error
+  this.msg = message
 }
-function PlaceSearchException(message) {
+function PlaceSearchException(error, msg) {
   this.name = "GeocoderException"
-  this.message = message
+  this.error = error
+  this.msg = message
 }
-function PlaceDetailsException(message) {
+function PlaceDetailsException(error, msg) {
   this.name = "GeocoderException"
-  this.message = message
+  this.error = error
+  this.msg = message
 }
 
 module.exports = pintbot
