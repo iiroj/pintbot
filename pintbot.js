@@ -2,10 +2,12 @@ var config       = require("./config.js"),
     Dirty        = require("dirty"),
     Foursquare   = require("foursquare-venues"),
     geocoder     = require("geocoder"),
+    GooglePlaces = require("googleplaces"),
     Bot          = require('node-telegram-bot-api')
 
 var locations  = Dirty(__dirname + "/locations.json"),
     foursquare = new Foursquare(config.foursquareClientId, config.foursquareClientSecret),
+    places     = new GooglePlaces(config.googleApiKey, "json"),
     pintbot    = new Bot(config.telegramToken)
 
 pintbot.setWebHook(config.telegramUrl + "/" + config.telegramToken)
@@ -49,74 +51,54 @@ function suggestPubs(msgId, fromId, fromName) {
 
 // Find information about a pub based on name and location
 function pubInfo(msgId, fromId, fromName, query, location) {
-  var searchObj = {
-    query: query,
-    intent: "checkin",
-    limit: "1",
-    ll: String(location.geometry.lat) + "," + String(location.geometry.lng),
-    categoryId: "4bf58dd8d48988d116941735,4bf58dd8d48988d11b941735" // Limit to Bars, Pubs
+  var parameters = {
+    name: query,
+    location: [location.geometry.lat, location.geometry.lng]
   }
 
-  foursquare.searchVenues(searchObj, function(error, response) {
-    if (error) {
-      console.error(error)
-      pintbot.sendMessage(fromId, `Something went wrong, ${fromName}. Maybe try another location?`, {
+  places.placeSearch(parameters, function(error, response) {
+    if (error) { throw new PlaceSearchException(error.status) }
+    places.placeDetailsRequest({reference:response.results[0].reference}, function (error, response) {
+      if (error) { throw new PlaceDetailsException(error.status) }
+
+      var message = `🍻 *${response.result.name}*`
+      if (response.result.formatted_address) {
+        message += "\n_" + response.result.formatted_address + "_"
+      }
+      if (response.result.opening_hours) {
+        message += "\n\n"
+        if (response.result.opening_hours.open_now == true) {
+          message += "Open now!"
+        } else {
+          message += "Currently closed"
+        }
+      }
+      if (response.result.website || response.result.international_phone_number) {
+        message += "\n\n"
+        if (response.result.website) {
+          message += `[🌍 URL](${response.result.website})    `
+        }
+        if (response.result.international_phone_number) {
+          message += `📞 ${response.result.international_phone_number}`
+        }
+      }
+
+      pintbot.sendLocation(fromId, response.result.geometry.location.lat, response.result.geometry.location.lng, {
+        disable_notification: true,
         reply_to_message_id: msgId,
         reply_markup: {
           hide_keyboard: true
         }
-      })
-      return
-    }
-
-    var pub = response.response.venues[0]
-
-    if (pub == undefined) {
-      pintbot.sendMessage(fromId, `I found nothing, ${fromName}. Maybe try another location?`, {
+      }).then(pintbot.sendMessage(fromId, message, {
+        disable_web_page_preview: true,
+        parse_mode: "Markdown",
         reply_to_message_id: msgId,
         reply_markup: {
           hide_keyboard: true
         }
-      })
-      return
-    }
+      }))
 
-    var message = `🍻 *${pub.name}*`
-    if (pub.location.formattedAddress) {
-      message += "\n " + pub.location.formattedAddress.join(", ")
-    }
-    if (pub.location.distance) {
-      message += "\n_(" + pub.location.distance + " meters away)_"
-    }
-    if (pub.url | pub.contact.phone | pub.contact.formattedPhone) {
-      message += "\n\n"
-      if (pub.url) {
-        message += `[🌍 URL](${pub.url})    `
-      }
-      if (pub.contact.formattedPhone) {
-        message += `📞 ${pub.contact.formattedPhone}`
-      } else if (pub.contact.phone){
-        message += `📞 ${pub.contact.phone}`
-      }
-    }
-    if (pub.menu) {
-      message += "\n[🍺 Menu](" + pub.menu.url + ")"
-    }
-
-    pintbot.sendLocation(fromId, pub.location.lat, pub.location.lng, {
-      disable_notification: true,
-      reply_to_message_id: msgId,
-      reply_markup: {
-        hide_keyboard: true
-      }
-    }).then(pintbot.sendMessage(fromId, message, {
-      disable_web_page_preview: true,
-      parse_mode: "Markdown",
-      reply_to_message_id: msgId,
-      reply_markup: {
-        hide_keyboard: true
-      }
-    }))
+    })
   })
 }
 
@@ -301,6 +283,14 @@ pintbot.onText(/^\/help$/, function(msg) {
 
 // Error handling
 function GeocoderException(message) {
+  this.name = "GeocoderException"
+  this.message = message
+}
+function PlaceSearchException(message) {
+  this.name = "GeocoderException"
+  this.message = message
+}
+function PlaceDetailsException(message) {
   this.name = "GeocoderException"
   this.message = message
 }

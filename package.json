@@ -5,7 +5,7 @@
     "name": "Iiro Jäppinen",
     "email": "iiro@jappinen.fi"
   },
-  "description": "🍻 My function is to guide you to a pint of beer. Please send me your 📍location to start.",
+  "description": "🍻 My function is to guide you to a pint of beer. Please send me your location to start.",
   "main": "main.js",
   "readme": "",
   "repository": "github:iiroj/pintbot",
@@ -15,7 +15,8 @@
     "connect": "3.4.1",
     "dirty": "1.0.0",
     "foursquare-venues": "0.0.3",
-    "geocoder": "^0.2.2",
+    "geocoder": "0.2.2",
+    "googleplaces": "0.6.0",
     "node-telegram-bot-api": "0.20.1"
   },
   "scripts": {
