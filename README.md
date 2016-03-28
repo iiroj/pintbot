@@ -59,6 +59,16 @@ The key-value store for _pintbot.js_ that uses [node-dirty](https://github.com/f
       }
     }
 
+### recents.json
+
+The key-value store for three most recent searches of users, using [node-dirty](https://github.com/felixge/node-dirty). These values are used to create a recents keyboard that is sent with most messages. Format is as follows:
+
+    { "key" : 1234,
+      "value: {
+        ["search 1", "search 2", "search 3"]
+      }
+    }
+
 ## Licence
 
 Pint Bot is licenced under the GNU General Public License, version 2. Please refer to the file [LICENCE](https://github.com/iiroj/pintbot/blob/master/LICENCE) in this project.
