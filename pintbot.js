@@ -1,3 +1,5 @@
+"use strict";
+
 const config       = require("./config.js");
 const Dirty        = require("dirty");
 const geocoder     = require("geocoder");
@@ -17,7 +19,7 @@ function suggestPubs(msg) {
   const fromName   = msg.from.first_name;
   const location   = locations.get(fromId);
   const message    = `Here are some suggestions based on your location, ${fromName}.`;
-  var   parameters = {
+  let   parameters = {
     location: [location.geometry.lat, location.geometry.lng],
     rankby: "distance",
     type: "bar"
@@ -50,7 +52,7 @@ function pubInfo(msg) {
   const msgId      = msg.id;
   const fromId     = msg.from.id;
   const location   = locations.get(fromId);
-  var   parameters = {
+  let   parameters = {
         name: msg.text,
         location: [location.geometry.lat, location.geometry.lng],
         rankby: "distance"
@@ -71,7 +73,7 @@ function pubInfo(msg) {
         return;
       }
 
-      var message = `🍻 *${response.result.name}*`;
+      let message = `🍻 *${response.result.name}*`;
       if (response.result.formatted_address) {
         message += "\n_" + response.result.formatted_address + "_";
       }
@@ -82,7 +84,7 @@ function pubInfo(msg) {
         } else {
           message += "Not yet open";
         }
-        var day = new Date();
+        let day = new Date();
         message += "* (" + response.result.opening_hours.weekday_text[day.getDay()] + ")";
       }
       if (response.result.website || response.result.international_phone_number) {
@@ -115,7 +117,7 @@ function pubInfo(msg) {
 };
 
 function updateRecents(msg) {
-  var recent = recents.get(msg.from.id);
+  let recent = recents.get(msg.from.id);
   if (recent == undefined) {
     recent = [[msg.text]];
   } else {
@@ -133,7 +135,7 @@ pintbot.on("location", function(msg) {
       return;
     }
 
-    var location = {
+    let location = {
       formatted_address: undefined,
       geometry: {
         lat: msg.location.latitude,
@@ -153,8 +155,8 @@ pintbot.on("location", function(msg) {
 pintbot.onText(/^\/location$/, function(msg) {
   const fromId       = msg.from.id;
   const fromName     = msg.from.first_name;
-  var   location     = locations.get(fromId);
-  var   locationName = "";
+  let   location     = locations.get(fromId);
+  let   locationName = "";
   if (location == undefined) {
     var result = `😰 I don't know where you are, ${fromName}`;
   } else {
@@ -195,7 +197,7 @@ pintbot.onText(/^\/location$/, function(msg) {
           return;
         }
 
-        var location = {
+        let location = {
           formatted_address: msg.text,
           geometry: {
             lat: null,
