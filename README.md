@@ -9,7 +9,7 @@
 > 
 > [About Pint Bot](https://github.com/iiroj/pintbot)
 
-Pint Bot is a [Telegram](https://telegram.org) [bot](https://core.telegram.org/bots) powered by [Node.js](https://nodejs.org/en/) that uses the [Foursquare](https://foursquare.com) [API](https://developer.foursquare.com) to find pubs based on the user's location. Location can be set either by sending Pint Bot a location message, or by supplying it with a geocodable location description.
+Pint Bot is a [Telegram](https://telegram.org) [bot](https://core.telegram.org/bots) powered by [Node.js](https://nodejs.org/en/) that uses the [Google Places API](https://developers.google.com/places/) to find pubs based on the user's location. Location can be set either by sending Pint Bot a location message, or by supplying it with a geocodable location description.
 
 Pint Bot is constantly under development and the latest version can be found on Telegram:
 
@@ -39,11 +39,11 @@ The _HTTP Server_ for Pint Bot. A [Connect](https://github.com/senchalabs/connec
 
 ### pintbot.js
 
-The _bot backend_ running on [node-telegram-bot-api](https://github.com/yagop/node-telegram-bot-api). _pintbot.js_ initializes both the Foursquare API and the Telegram Bot API. _pintbot.js_ then receives requests from _server.js_ and responds according to the message content.
+The _bot backend_ running on [node-telegram-bot-api](https://github.com/yagop/node-telegram-bot-api). _pintbot.js_ initializes both the Google API and the Telegram Bot API. _pintbot.js_ then receives requests from _server.js_ and responds according to the message content.
 
 ### config.js
 
-The configuration file contains the keys for both the Telegram bot and Foursquare APIs. An example file is provided.
+The configuration file contains the keys for both the Telegram bot and Google APIs. An example file is provided.
 
 ### locations.json
 
