@@ -53,11 +53,14 @@ function suggestPubs(msgId, fromId, fromName) {
 function pubInfo(msgId, fromId, fromName, query, location) {
   var parameters = {
     name: query,
-    location: [location.geometry.lat, location.geometry.lng]
+    location: [location.geometry.lat, location.geometry.lng],
+    rankby: "distance"
   }
 
   places.placeSearch(parameters, function(error, response) {
     if (error) { throw new PlaceSearchException(error.status) }
+    if (response.status == "ZERO_RESULTS") { throw new PlaceSearchException(response.status) }
+
     places.placeDetailsRequest({reference:response.results[0].reference}, function (error, response) {
       if (error) { throw new PlaceDetailsException(error.status) }
 
