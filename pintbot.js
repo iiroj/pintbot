@@ -63,12 +63,14 @@ function pubInfo(msg) {
         message += "\n_" + response.result.formatted_address + "_"
       }
       if (response.result.opening_hours) {
-        message += "\n\n"
+        message += "\n\n*"
         if (response.result.opening_hours.open_now == true) {
           message += "Open now!"
         } else {
-          message += "Currently closed"
+          message += "Not yet open"
         }
+        var day = new Date()
+        message += "* (" + response.result.opening_hours.weekday_text[day.getDay()] + ")"
       }
       if (response.result.website || response.result.international_phone_number) {
         message += "\n\n"
