@@ -14,7 +14,6 @@
     "body-parser": "1.15.0",
     "connect": "3.4.1",
     "dirty": "1.0.0",
-    "foursquare-venues": "0.0.3",
     "geocoder": "0.2.2",
     "googleplaces": "0.6.0",
     "node-telegram-bot-api": "0.20.1"
