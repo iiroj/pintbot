@@ -4,9 +4,10 @@ var config       = require("./config.js"),
     GooglePlaces = require("googleplaces"),
     Bot          = require('node-telegram-bot-api')
 
-var locations  = Dirty(__dirname + "/locations.json"),
-    places     = new GooglePlaces(config.googleApiKey, "json"),
-    pintbot    = new Bot(config.telegramToken)
+var locations    = Dirty(__dirname + "/locations.json"),
+    places       = new GooglePlaces(config.googleApiKey, "json"),
+    pintbot      = new Bot(config.telegramToken),
+    recents      = Dirty(__dirname + "/recents.json")
 
 pintbot.setWebHook(config.telegramUrl + "/" + config.telegramToken)
 
@@ -98,6 +99,18 @@ function pubInfo(msg) {
       }))
 
     })
+  })
+}
+
+function updateRecents() {
+  var recent = recents.get(fromId)
+  if (recent == undefined) {
+    var recent = [[msg.text]]
+  } else {
+    Array.prototype.push.apply(recent, [[msg.text]])
+  }
+  recents.set(fromId, recent.slice(-3), function() {
+    return recents.get(fromId)
   })
 }
 
