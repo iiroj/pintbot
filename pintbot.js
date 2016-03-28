@@ -41,12 +41,15 @@ function suggestPubs(msg) {
 }
 
 // Find information about a pub based on name and location
-function pubInfo(msgId, fromId, fromName, query, location) {
-  var parameters = {
-    name: query,
-    location: [location.geometry.lat, location.geometry.lng],
-    rankby: "distance"
-  }
+function pubInfo(msg) {
+  var msgId      = msg.id,
+      fromId     = msg.from.id,
+      location   = locations.get(fromId),
+      parameters = {
+        name: msg.text,
+        location: [location.geometry.lat, location.geometry.lng],
+        rankby: "distance"
+      }
 
   places.placeSearch(parameters, function(error, response) {
     if (error) { throw new PlaceSearchException(error.status) }
@@ -217,9 +220,7 @@ pintbot.onText(/^\/clear$/, function(msg) {
 
 // When user sends any text not starting with /, use it to find info about a pub. If there is no location saved, pass to demandLocation()
 pintbot.onText(/^[^/].+/, function(msg) {
-  var query    = msg.text,
-      msgId    = msg.id,
-      fromId   = msg.from.id,
+  var fromId   = msg.from.id,
       fromName = msg.from.first_name,
       location = locations.get(fromId)
 
@@ -229,7 +230,7 @@ pintbot.onText(/^[^/].+/, function(msg) {
   if (location == undefined) {
     demandLocation(fromId, fromName)
   } else {
-    pubInfo(msgId, fromId, fromName, query, location)
+    pubInfo(msg)
   }
 })
 
