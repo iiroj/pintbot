@@ -91,7 +91,8 @@ function pubInfo(msg) {
         parse_mode: "Markdown",
         reply_to_message_id: msgId,
         reply_markup: {
-          keyboard: recents.get(fromId)
+          keyboard: recents.get(fromId),
+          resize_keyboard: true
         }
       }))
 
@@ -102,11 +103,11 @@ function pubInfo(msg) {
 function updateRecents(msg) {
   var recent = recents.get(msg.from.id)
   if (recent == undefined) {
-    var recent = [msg.text]
+    var recent = [[msg.text]]
   } else {
-    Array.prototype.push.apply(recent, [msg.text])
+    Array.prototype.push.apply(recent[0], [msg.text])
   }
-  recents.set(msg.from.id, recent.slice(-3))
+  recents.set(msg.from.id, [recent[0].slice(-3)])
 }
 
 // When user sends a location, save it and pass to suggestPubs()
@@ -162,7 +163,8 @@ pintbot.onText(/^\/location$/, function(msg) {
         pintbot.sendMessage(fromId, `Location update cancelled.`, {
           reply_to_message_id: msg.id,
           reply_markup: {
-            keyboard: recents.get(fromId)
+            keyboard: recents.get(fromId),
+            resize_keyboard: true
           }
         })
         return
@@ -187,7 +189,8 @@ pintbot.onText(/^\/location$/, function(msg) {
         pintbot.sendMessage(fromId, `Location updated to ${location.formatted_address}.`, {
           reply_to_message_id: msg.id,
           reply_markup: {
-            keyboard: recents.get(fromId)
+            keyboard: recents.get(fromId),
+            resize_keyboard: true
           }
         })
       })
@@ -279,7 +282,8 @@ pintbot.onText(/^\/help$/, function(msg) {
     parse_mode: "Markdown",
     reply_to_message_id: msgId,
     reply_markup: {
-      keyboard: recents.get(fromId)
+      keyboard: recents.get(fromId),
+      resize_keyboard: true
     }
   })
 })
