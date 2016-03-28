@@ -85,7 +85,11 @@ function pubInfo(msg) {
 
       pintbot.sendLocation(fromId, response.result.geometry.location.lat, response.result.geometry.location.lng, {
         disable_notification: true,
-        reply_to_message_id: msgId
+        reply_to_message_id: msgId,
+        reply_markup: {
+          keyboard: recents.get(fromId),
+          resize_keyboard: true
+        }
       }).then(pintbot.sendMessage(fromId, message, {
         disable_web_page_preview: true,
         parse_mode: "Markdown",
