@@ -176,7 +176,7 @@ pintbot.onText(/^\/location$/, function(msg) {
           location.geometry.lng = response.results[0].geometry.location.lng
         }
         locations.set(fromId, location)
-        pintbot.sendMessage(fromId, `Location updated to ${locationName}.`, {
+        pintbot.sendMessage(fromId, `Location updated to ${location.formatted_address}.`, {
           reply_markup: {
             reply_to_message_id: msg.id,
             hide_keyboard: true
