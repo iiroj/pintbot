@@ -121,6 +121,9 @@ function updateRecents(msg) {
   if (recent == undefined) {
     recent = [[msg.text]];
   } else {
+    if (recent[0].indexOf(msg.text) > -1) {
+      recent[0].splice(recent[0].indexOf(msg.text), 1);
+    } 
     Array.prototype.push.apply(recent[0], [msg.text]);
   }
 
