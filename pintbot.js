@@ -90,10 +90,10 @@ function pubInfo(msg) {
       if (response.result.website || response.result.international_phone_number) {
         message += "\n\n";
         if (response.result.website) {
-          message += `[🌍 URL](${response.result.website})    `;
+          message += "🌍 " + response.result.website;
         }
         if (response.result.international_phone_number) {
-          message += `📞 ${response.result.international_phone_number}`;
+          message += "\n📞 " + response.result.international_phone_number;
         }
       }
       pintbot.sendLocation(fromId, response.result.geometry.location.lat, response.result.geometry.location.lng, {
