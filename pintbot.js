@@ -175,7 +175,7 @@ pintbot.onText(/^\/location$/, function(msg) {
       locationName = location.formatted_address;
       var result   = `My records show you are in ${locationName}`;
     } else {
-      const coords = String(location.geometry.lat) + "," + String(location.lng);
+      const coords = String(location.geometry.lat) + "," + String(location.geometry.lng);
       locationName = coords;
       var result   = `My records show you are at (${locationName})`;
     }
