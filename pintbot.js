@@ -7,7 +7,6 @@ const GooglePlaces = require("googleplaces");
 const Bot          = require('node-telegram-bot-api');
 const locations    = Dirty(__dirname + "/locations.json");
 const places       = new GooglePlaces(config.googleApiKey, "json");
-const pintbot      = new Bot(config.telegramToken);
 const recents      = Dirty(__dirname + "/recents.json");
 
 if(process.env.IS_PROD == true) {
