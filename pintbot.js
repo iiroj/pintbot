@@ -4,20 +4,13 @@ const config       = require("./config.js");
 const Dirty        = require("dirty");
 const geocoder     = require("geocoder");
 const GooglePlaces = require("googleplaces");
-const Bot          = require('node-telegram-bot-api');
+const telegram     = require('node-telegram-bot-api');
+const pintbot      = new telegram(config.telegramToken);
 const locations    = Dirty(__dirname + "/locations.json");
 const places       = new GooglePlaces(config.googleApiKey, "json");
 const recents      = Dirty(__dirname + "/recents.json");
 
-if(process.env.IS_PROD == true) {
-  var pintbot    = new Bot(config.telegramToken);
-  pintbot.setWebHook(config.telegramUrl + "/" + config.telegramToken);
-  console.log("Pint Bot is running in production mode");
-} else {
-  var pintbot    = new Bot(config.telegramToken, { polling: true });
-  pintbot.setWebHook();
-  console.log("Pint Bot is running in development mode");
-}
+pintbot.setWebHook(config.telegramUrl + "/" + config.telegramToken);
 
 // Suggest pubs based on the user's location
 function suggestPubs(msg) {
