@@ -10,7 +10,13 @@ const places       = new GooglePlaces(config.googleApiKey, "json");
 const pintbot      = new Bot(config.telegramToken);
 const recents      = Dirty(__dirname + "/recents.json");
 
-pintbot.setWebHook(config.telegramUrl + "/" + config.telegramToken);
+if(process.env.IS_PROD == true) {
+  const pintbot    = new Bot(config.telegramToken);
+  pintbot.setWebHook(config.telegramUrl + "/" + config.telegramToken);
+}
+else {
+  const pintbot    = new Bot(config.telegramToken, { polling: true });
+}
 
 // Suggest pubs based on the user's location
 function suggestPubs(msg) {
