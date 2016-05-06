@@ -10,11 +10,11 @@ const places       = new GooglePlaces(config.googleApiKey, "json");
 const recents      = Dirty(__dirname + "/recents.json");
 
 if(process.env.IS_PROD == true) {
-  const pintbot    = new Bot(config.telegramToken);
+  var pintbot    = new Bot(config.telegramToken);
   pintbot.setWebHook(config.telegramUrl + "/" + config.telegramToken);
   console.log("Pint Bot is running in production mode");
 } else {
-  const pintbot    = new Bot(config.telegramToken, { polling: true });
+  var pintbot    = new Bot(config.telegramToken, { polling: true });
   pintbot.setWebHook();
   console.log("Pint Bot is running in development mode");
 }
