@@ -13,9 +13,11 @@ const recents      = Dirty(__dirname + "/recents.json");
 if(process.env.IS_PROD == true) {
   const pintbot    = new Bot(config.telegramToken);
   pintbot.setWebHook(config.telegramUrl + "/" + config.telegramToken);
+  console.log("Pint Bot is running in production mode")
 }
 else {
   const pintbot    = new Bot(config.telegramToken, { polling: true });
+  console.log("Pint Bot is running in development mode")
 }
 
 // Suggest pubs based on the user's location
