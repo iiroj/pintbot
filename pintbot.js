@@ -14,10 +14,9 @@ if(process.env.IS_PROD == true) {
   const pintbot    = new Bot(config.telegramToken);
   pintbot.setWebHook(config.telegramUrl + "/" + config.telegramToken);
   console.log("Pint Bot is running in production mode");
-}
-else {
+} else {
   const pintbot    = new Bot(config.telegramToken, { polling: true });
-  pintbot.setWebHook("");
+  pintbot.setWebHook();
   console.log("Pint Bot is running in development mode");
 }
 
