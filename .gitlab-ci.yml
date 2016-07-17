@@ -6,7 +6,7 @@ build:
   script:
     - npm install
     - rm -fr /var/www/pintbot.jappinen.fi/*
-    - cp * /var/www/pintbot.jappinen.fi/
+    - cp -r * /var/www/pintbot.jappinen.fi/
   cache:
     paths:
       - node_modules
