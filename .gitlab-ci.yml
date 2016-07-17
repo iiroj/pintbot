@@ -1,0 +1,14 @@
+stages:
+  - deploy
+
+build:
+  stage: build
+  script:
+    - npm install
+    - rm -fr /var/www/pintbot.jappinen.fi/*
+    - cp * /var/www/pintbot.jappinen.fi/
+  cache:
+    paths:
+      - node_modules
+    key: "$CI_BUILD_REF"
+    untracked: true
