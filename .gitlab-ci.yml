@@ -5,7 +5,7 @@ build:
   stage: build
   script:
     - npm install
-    - cp * /var/www/pintbot.jappinen.fi/
+    - cp -r * /var/www/pintbot.jappinen.fi/
   cache:
     paths:
       - node_modules
