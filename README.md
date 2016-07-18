@@ -17,9 +17,9 @@ Pint Bot is constantly under development and the latest version can be found on 
 
 ## Screenshots
 
-![Screenshot 1](https://raw.githubusercontent.com/iiroj/pintbot/master/screenshot%201.png)
+![Screenshot 1](https://gitlab.com/iiroj/pintbot/raw/master/screenshot%201.png)
 
-![Screenshot 2](https://raw.githubusercontent.com/iiroj/pintbot/master/screenshot%202.png)
+![Screenshot 2](https://gitlab.com/iiroj/pintbot/raw/master/screenshot%202.png)
 
 ## To-do
 
