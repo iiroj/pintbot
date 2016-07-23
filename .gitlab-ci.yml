@@ -1,8 +1,8 @@
 stages:
-  - build
+  - deploy
 
-build:
-  stage: build
+deploy:
+  stage: deploy
   script:
     - npm install
     - cp -r * /var/www/pintbot.jappinen.fi/
