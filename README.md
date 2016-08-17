@@ -9,11 +9,7 @@
 > 
 > [About Pint Bot](https://github.com/iiroj/pintbot)
 
-Pint Bot is a [Telegram](https://telegram.org) [bot](https://core.telegram.org/bots) powered by [Node.js](https://nodejs.org/en/) that uses the [Google Places API](https://developers.google.com/places/) to find pubs based on the user's location. Location can be set either by sending Pint Bot a location message, or by supplying it with a geocodable location description.
-
-Pint Bot is constantly under development and the latest version can be found on Telegram:
-
-[Telegram: Contact @pintbot](https://telegram.me/pintbot)
+Pint Bot was a [Telegram](https://telegram.org) [bot](https://core.telegram.org/bots) powered by [Node.js](https://nodejs.org/en/) that used the [Google Places API](https://developers.google.com/places/) to find pubs based on the user's location. Location could be set either by sending Pint Bot a location message, or by supplying it with a geocodable location description.
 
 ## Screenshots
 
