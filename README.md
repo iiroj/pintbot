@@ -13,9 +13,9 @@ Pint Bot was a [Telegram](https://telegram.org) [bot](https://core.telegram.org/
 
 ## Screenshots
 
-![Screenshot 1](https://gitlab.com/iiroj/pintbot/raw/master/screenshot%201.png)
+![Screenshot 1](screenshot 1.png?raw=true)
 
-![Screenshot 2](https://gitlab.com/iiroj/pintbot/raw/master/screenshot%202.png)
+![Screenshot 2](screenshot 2.png?raw=true)
 
 ## To-do
 
