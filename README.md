@@ -11,6 +11,8 @@
 
 Pint Bot was a [Telegram](https://telegram.org) [bot](https://core.telegram.org/bots) powered by [Node.js](https://nodejs.org/en/) that used the [Google Places API](https://developers.google.com/places/) to find pubs based on the user's location. Location could be set either by sending Pint Bot a location message, or by supplying it with a geocodable location description.
 
+The canonical repository for this project is at [gitlab:iiroj/pintbot](https://gitlab.com/iiroj/pintbot). It is mirrored at [github:iiroj/pintbot](https://github.com/iiroj/pintbot) for convenience.
+
 ## Screenshots
 
 ![Screenshot 1](screenshot 1.png?raw=true)
