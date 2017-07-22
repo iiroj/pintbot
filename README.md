@@ -15,9 +15,9 @@ The canonical repository for this project is at [gitlab:iiroj/pintbot](https://g
 
 ## Screenshots
 
-![Screenshot 1](screenshot 1.png?raw=true)
+![Screenshot 1](./screenshot%201.png)
 
-![Screenshot 2](screenshot 2.png?raw=true)
+![Screenshot 2](./screenshot%202.png)
 
 ## To-do
 
